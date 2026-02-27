@@ -373,6 +373,7 @@ async def make_api_request(
     endpoint: str,
     args: Mapping[str, str] | None = None,
     *,
+    # pylint: disable-next=unused-argument
     entity_should_exist: bool,
     method: Literal["GET", "POST"] = "GET",
     body: None | Mapping[str, str | int] = None,
@@ -394,13 +395,8 @@ async def make_api_request(
         request_timeout=request_timeout,
     )
     if response.code != 200:
-        normed_response_code = (
-            400
-            if not entity_should_exist and response.code == 500
-            else response.code
-        )
         LOGGER.log(
-            logging.ERROR if normed_response_code >= 500 else logging.WARNING,
+            logging.ERROR if response.code >= 500 else logging.WARNING,
             "%s request to %r with body=%r failed with code=%d and reason=%r",
             method,
             url,
@@ -409,7 +405,7 @@ async def make_api_request(
             response.reason,
         )
         raise HTTPError(
-            normed_response_code if normed_response_code in {400, 404} else 503,
+            404 if response.code == 404 else 503,
             reason=f"{url} returned: {response.code} {response.reason}",
         )
     return json.loads(response.body)
