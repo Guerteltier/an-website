@@ -20,7 +20,7 @@ import logging
 from base64 import b64decode
 from collections.abc import Callable, Mapping
 from functools import wraps
-from typing import Any, ParamSpec, TypeVar, cast, overload
+from typing import Any, Final, ParamSpec, TypeVar, cast, overload
 
 from tornado.web import RequestHandler
 
@@ -103,7 +103,7 @@ def is_authorized(
     return permission in result
 
 
-_DefaultValue = object()
+_DEFAULT_VALUE: Final = object()
 
 
 @overload
@@ -123,7 +123,7 @@ def requires(
 
 def requires(
     *perms: Permission,
-    return_instead_of_finishing: Any = _DefaultValue,
+    return_instead_of_finishing: Any = _DEFAULT_VALUE,
     allow_cookie_auth: bool = True,
 ) -> Callable[[Callable[Args, Ret]], Callable[Args, Any]]:
     """Handle required permissions."""
@@ -131,7 +131,7 @@ def requires(
     for perm in perms:
         permissions |= perm
 
-    finish_with_error = return_instead_of_finishing is _DefaultValue
+    finish_with_error = return_instead_of_finishing is _DEFAULT_VALUE
 
     def internal(method: Callable[Args, Ret]) -> Callable[Args, Any]:
         method.required_perms = permissions  # type: ignore[attr-defined]
@@ -183,11 +183,11 @@ def requires_settings(
 
 def requires_settings(
     *settings: str,
-    return_: Any = _DefaultValue,
+    return_: Any = _DEFAULT_VALUE,
     status_code: int | None = None,
 ) -> Callable[[Callable[Args, Ret]], Callable[Args, Any]]:
     """Require some settings to execute a method."""
-    finish_with_error = return_ is _DefaultValue
+    finish_with_error = return_ is _DEFAULT_VALUE
     if not finish_with_error and isinstance(status_code, int):
         raise ValueError("return_ and finish_status specified")
     if finish_with_error and status_code is None:

@@ -76,7 +76,7 @@ async def subscribe_to_redis_channel(
                 pass
             case {
                 "type": "message",
-                "data": str(data),
+                "data": str() as data,
                 "channel": channel,
             } if (
                 channel == REDIS_CHANNEL

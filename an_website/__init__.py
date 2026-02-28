@@ -91,7 +91,7 @@ MEDIA_TYPES: Final[Mapping[str, MediaType]] = json.loads(
     (DIR / "vendored" / "mime-db.json").read_bytes()
 )
 
-NAME = "an-website"
+NAME = "an-website"  # pylint: disable=invalid-name
 
 
 def get_version() -> str:

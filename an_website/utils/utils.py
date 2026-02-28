@@ -48,7 +48,6 @@ from typing import (
     Final,
     Literal,
     TypeAlias,
-    Union,
     cast,
     get_args,
 )
@@ -74,11 +73,11 @@ if TYPE_CHECKING:
 
 LOGGER: Final = logging.getLogger(__name__)
 
-type Handler = Union[
-    tuple[str, type[RequestHandler]],
-    tuple[str, type[RequestHandler], dict[str, Any]],
-    tuple[str, type[RequestHandler], dict[str, Any], str],
-]
+type Handler = (
+    tuple[str, type[RequestHandler]]
+    | tuple[str, type[RequestHandler], dict[str, Any]]
+    | tuple[str, type[RequestHandler], dict[str, Any], str]
+)
 
 type OpenMojiValue = Literal[False, "img", "glyf_colr1", "glyf_colr0"]
 BumpscosityValue: TypeAlias = Literal[0, 1, 12, 50, 76, 100, 1000]
@@ -860,7 +859,6 @@ def strangle(string: str) -> float:
 
 
 def time_function[  # noqa: D103
-    # pylint: disable-next=invalid-name
     T, **P  # fmt: skip
 ](
     function: Callable[P, T], *args: P.args, **kwargs: P.kwargs

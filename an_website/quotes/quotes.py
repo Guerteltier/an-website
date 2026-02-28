@@ -80,6 +80,7 @@ def parse_rating_filter(rating_filter_str: str) -> RatingFilter:
     return "smart"
 
 
+# pylint: disable-next=too-complex
 def get_next_id(rating_filter: RatingFilter) -> tuple[int, int]:
     """Get the id of the next quote."""
     if rating_filter == "smart":
