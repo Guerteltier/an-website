@@ -23,6 +23,7 @@ from urllib.parse import quote as quote_url
 import orjson as json
 import regex
 from tornado.httpclient import AsyncHTTPClient
+from tornado.web import HTTPError
 
 from .. import CA_BUNDLE_PATH, EVENT_REDIS
 from ..utils.request_handler import HTMLRequestHandler
@@ -145,6 +146,8 @@ class AuthorsInfoPage(HTMLRequestHandler):
         """Handle GET requests to the author info page."""
         author_id: int = int(id_str)
         author = await get_author_by_id(author_id)
+        if author is None:
+            raise HTTPError(404)
         if head:
             return
         if author.info is None:

@@ -94,7 +94,7 @@ class QuotesObjBase(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def fetch_new_data(self) -> QuotesObjBase:
+    async def fetch_new_data(self) -> QuotesObjBase | None:
         """Fetch new data from the API."""
         raise NotImplementedError
 
@@ -126,13 +126,12 @@ class Author(QuotesObjBase):
         """Endpoint to fetch all authors."""
         return "authors"
 
-    async def fetch_new_data(self) -> Author:
+    async def fetch_new_data(self) -> Author | None:
         """Fetch new data from the API."""
-        return parse_author(
-            await make_api_request(
-                f"authors/{self.id}", entity_should_exist=True
-            )
+        data = await make_api_request(
+            f"authors/{self.id}", entity_should_exist=True
         )
+        return None if data is None else parse_author(data)
 
     def get_path(self) -> str:
         """Return the path to the author info."""
@@ -177,14 +176,14 @@ class Quote(QuotesObjBase):
         """Endpoint to fetch all quotes."""
         return "quotes"
 
-    async def fetch_new_data(self) -> Quote:
+    async def fetch_new_data(self) -> Quote | None:
         """Fetch new data from the API."""
-        return parse_quote(
-            await make_api_request(
-                f"quotes/{self.id}", entity_should_exist=True
-            ),
-            self,
+        data = await make_api_request(
+            f"quotes/{self.id}", entity_should_exist=True
         )
+        if data is None:
+            return None
+        return parse_quote(data, self)
 
     def get_path(self) -> str:
         """Return the path to the quote info."""
@@ -290,7 +289,7 @@ class WrongQuote(QuotesObjBase):
         self,
         vote: Literal[-1, 1],
         lazy: bool = False,
-    ) -> WrongQuote:
+    ) -> WrongQuote | None:
         """Vote for the wrong quote."""
         if self.id == -1:
             raise ValueError("Can't vote for a not existing quote.")
@@ -302,13 +301,18 @@ class WrongQuote(QuotesObjBase):
         #     )
         #     return self
         # do the voting
+        data = await make_api_request(
+            f"wrongquotes/{self.id}",
+            method="POST",
+            body={"vote": str(vote)},
+            entity_should_exist=True,
+        )
+        if data is None:
+            self.id = -1
+            return None
+
         return parse_wrong_quote(
-            await make_api_request(
-                f"wrongquotes/{self.id}",
-                method="POST",
-                body={"vote": str(vote)},
-                entity_should_exist=True,
-            ),
+            data,
             self,
         )
 
@@ -378,7 +382,7 @@ async def make_api_request(
     method: Literal["GET", "POST"] = "GET",
     body: None | Mapping[str, str | int] = None,
     request_timeout: float | None = None,
-) -> Any:  # TODO: list[dict[str, Any]] | dict[str, Any]:
+) -> Any | None:  # TODO: list[dict[str, Any]] | dict[str, Any] | None
     """Make API request and return the result as dict."""
     if pytest_is_running():
         return None
@@ -395,6 +399,8 @@ async def make_api_request(
         request_timeout=request_timeout,
     )
     if response.code != 200:
+        if response.code == 404:
+            return None
         LOGGER.log(
             logging.ERROR if response.code >= 500 else logging.WARNING,
             "%s request to %r with body=%r failed with code=%d and reason=%r",
@@ -405,7 +411,7 @@ async def make_api_request(
             response.reason,
         )
         raise HTTPError(
-            404 if response.code == 404 else 503,
+            503,
             reason=f"{url} returned: {response.code} {response.reason}",
         )
     return json.loads(response.body)
@@ -705,12 +711,16 @@ async def _update_cache[Q: QuotesObjBase](
     redis: Redis[str],
     redis_prefix: str,
 ) -> tuple[Q, ...]:
+    wq_data = await make_api_request(
+        klass.fetch_all_endpoint(),
+        entity_should_exist=True,
+        request_timeout=100,
+    )
+    if wq_data is None:
+        LOGGER.error("%s returned 404", klass.fetch_all_endpoint())
+        return ()
     parsed_data = await parse_list_of_quote_data(
-        wq_data := await make_api_request(
-            klass.fetch_all_endpoint(),
-            entity_should_exist=True,
-            request_timeout=100,
-        ),
+        wq_data,
         parse,
     )
     if wq_data and EVENT_REDIS.is_set():
@@ -722,26 +732,30 @@ async def _update_cache[Q: QuotesObjBase](
     return parsed_data
 
 
-async def get_author_by_id(author_id: int) -> Author:
+async def get_author_by_id(author_id: int) -> Author | None:
     """Get an author by its id."""
     author = AUTHORS_CACHE.get(author_id)
     if author is not None:
         return author
-    return parse_author(
-        await make_api_request(
-            f"authors/{author_id}", entity_should_exist=False
-        )
+    data = await make_api_request(
+        f"authors/{author_id}", entity_should_exist=False
     )
+    if data is None:
+        return None
+    return parse_author(data)
 
 
-async def get_quote_by_id(quote_id: int) -> Quote:
+async def get_quote_by_id(quote_id: int) -> Quote | None:
     """Get a quote by its id."""
     quote = QUOTES_CACHE.get(quote_id)
     if quote is not None:
         return quote
-    return parse_quote(
-        await make_api_request(f"quotes/{quote_id}", entity_should_exist=False)
+    data = await make_api_request(
+        f"quotes/{quote_id}", entity_should_exist=False
     )
+    if data is None:
+        return None
+    return parse_quote(data)
 
 
 async def get_wrong_quote(
@@ -814,22 +828,36 @@ async def create_wq_and_vote(
     If the wrong_quote doesn't exist yet, create it.
     """
     wrong_quote = WRONG_QUOTES_CACHE.get((quote_id, author_id))
-    if wrong_quote and wrong_quote.id != -1:
-        return await wrong_quote.vote(vote, fast)
+    if (
+        wrong_quote
+        and wrong_quote.id != -1
+        and (result := await wrong_quote.vote(vote, fast)) is not None
+    ):
+        return result
     # we don't know the wrong_quote_id, so we have to create the wrong_quote
-    wrong_quote = parse_wrong_quote(
-        await make_api_request(
-            "wrongquotes",
-            method="POST",
-            body={
-                "quote": str(quote_id),
-                "author": str(author_id),
-                "contributed_by": contributed_by,
-            },
-            entity_should_exist=False,
-        )
+    data = await make_api_request(
+        "wrongquotes",
+        method="POST",
+        body={
+            "quote": str(quote_id),
+            "author": str(author_id),
+            "contributed_by": contributed_by,
+        },
+        entity_should_exist=True,
     )
-    return await wrong_quote.vote(vote, lazy=True)
+    if data is None:
+        LOGGER.error(
+            "Creating wrong quote (%s-%s) failed with 404", quote_id, author_id
+        )
+        raise HTTPError(500)
+    wrong_quote = parse_wrong_quote(data)
+    if (result := await wrong_quote.vote(vote, lazy=True)) is not None:
+        return result
+    LOGGER.error(
+        "Voting just created wrong quote (%s) failed with 404",
+        wrong_quote.get_id_as_str(True),
+    )
+    raise HTTPError(500)
 
 
 class QuoteReadyCheckHandler(HTMLRequestHandler):

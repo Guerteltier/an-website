@@ -199,6 +199,7 @@ async def test_quote_updating() -> None:
 
     quote = await quotes.get_quote_by_id(1)
 
+    assert quote is not None
     assert (
         quote.quote == "Frage nicht, was dein Land für dich tun kann, "
         "frage, was du für dein Land tun kannst."

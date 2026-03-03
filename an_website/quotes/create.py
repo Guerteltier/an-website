@@ -49,17 +49,20 @@ async def create_quote(quote_str: str, author: Author) -> Quote:
     if quote is not None:
         return quote
 
-    result = parse_quote(
-        await make_api_request(
-            "quotes",
-            method="POST",
-            body={
-                "author": str(author.id),
-                "quote": quote_str,
-            },
-            entity_should_exist=False,
-        )
+    data = await make_api_request(
+        "quotes",
+        method="POST",
+        body={
+            "author": str(author.id),
+            "quote": quote_str,
+        },
+        entity_should_exist=False,
     )
+    if data is None:
+        LOGGER.error("Failed to create quote: „%s“ - %s", quote_str, author)
+        raise HTTPError(500)
+
+    result = parse_quote(data)
 
     LOGGER.info("Created quote %d: %r", result.id, result.quote)
 
@@ -74,14 +77,18 @@ async def create_author(author_str: str) -> Author:
     if author is not None:
         return author
 
-    result = parse_author(
-        await make_api_request(
-            "authors",
-            method="POST",
-            body={"author": author_str},
-            entity_should_exist=False,
-        )
+    data = await make_api_request(
+        "authors",
+        method="POST",
+        body={"author": author_str},
+        entity_should_exist=False,
     )
+
+    if data is None:
+        LOGGER.error("Failed to create author: %s", author_str)
+        raise HTTPError(500)
+
+    result = parse_author(data)
 
     LOGGER.info("Created author %d: %r", result.id, result.name)
 
@@ -140,6 +147,12 @@ async def create_wrong_quote(
             },
             entity_should_exist=False,
         )
+        if result is None:
+            LOGGER.error(
+                "Failed to create wrong quote (%s).",
+                wrong_quote.get_id_as_str(True),
+            )
+            raise HTTPError(500)
         wrong_quote = parse_wrong_quote(result)
         LOGGER.info(
             "Successfully created wrong quote: %s\n\n%s",
