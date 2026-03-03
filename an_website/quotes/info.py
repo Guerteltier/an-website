@@ -41,6 +41,8 @@ class QuotesInfoPage(HTMLRequestHandler):
         """Handle GET requests to the quote info page."""
         quote_id: int = int(id_str)
         quote = await get_quote_by_id(quote_id)
+        if quote is None:
+            raise HTTPError(404)
         if head:
             return
         wqs = get_wrong_quotes(lambda wq: wq.quote_id == quote_id, sort=True)
@@ -51,10 +53,10 @@ class QuotesInfoPage(HTMLRequestHandler):
             title="Zitat-Informationen",
             short_title="Zitat-Info",
             type="Zitat",
-            id=quote_id,
+            id=quote.id,
             text=str(quote),
             description=f"Falsch zugeordnete Zitate mit „{quote}“ als Zitat.",
-            create_kwargs={"quote": quote_id},
+            create_kwargs={"quote": quote.id},
         )
 
 
