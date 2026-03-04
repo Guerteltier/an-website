@@ -712,9 +712,7 @@ async def _update_cache[Q: QuotesObjBase](
     redis_prefix: str,
 ) -> tuple[Q, ...]:
     wq_data = await make_api_request(
-        klass.fetch_all_endpoint(),
-        entity_should_exist=True,
-        request_timeout=100,
+        klass.fetch_all_endpoint(), entity_should_exist=True
     )
     if wq_data is None:
         LOGGER.error("%s returned 404", klass.fetch_all_endpoint())
