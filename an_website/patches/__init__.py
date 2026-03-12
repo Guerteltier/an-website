@@ -49,6 +49,7 @@ from tornado.httputil import (
     HTTPHeaders,
     HTTPInputError,
     HTTPServerRequest,
+    ParseBodyConfig,
 )
 from tornado.log import gen_log
 from tornado.web import GZipContentEncoding, RedirectHandler, RequestHandler
@@ -212,6 +213,7 @@ def patch_tornado_arguments() -> None:  # noqa: C901
         arguments: dict[str, list[bytes]],
         files: dict[str, list[HTTPFile]],
         headers: None | HTTPHeaders = None,
+        config: ParseBodyConfig | None = None,
         *,
         _: Callable[..., None] = tornado.httputil.parse_body_arguments,
     ) -> None:
@@ -249,7 +251,7 @@ def patch_tornado_arguments() -> None:  # noqa: C901
                 if value is not None:
                     arguments.setdefault(key, []).append(ensure_bytes(value))
         else:
-            _(content_type, body, arguments, files, headers)
+            _(content_type, body, arguments, files, headers, config)
 
     parse_body_arguments.__doc__ = tornado.httputil.parse_body_arguments.__doc__
 
