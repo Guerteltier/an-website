@@ -24,7 +24,7 @@ const openPane = document.getElementById("open-pane");
 const sitePane = document.getElementById("site-pane");
 
 if (!openPane || !sitePane) {
-    throw Error("open-pane or site-pane not found");
+    throw new Error("open-pane or site-pane not found");
 }
 
 const setSitePaneState = (state: "open" | "close") => {

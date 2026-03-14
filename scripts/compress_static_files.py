@@ -135,8 +135,8 @@ class ZstdFileCompressor(FileCompressor):
         try:
             # pylint: disable-next=import-outside-toplevel
             from backports import zstd as _  # noqa: F401
-        except ModuleNotFoundError as exc:
-            assert exc.name in {"backports", "zstd"}, f"{exc.name}"
+        except ImportError as exc:
+            assert exc.name == "backports"
             yield "backports.zstd"
 
 

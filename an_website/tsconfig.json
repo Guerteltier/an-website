@@ -19,6 +19,7 @@
       "@utils/jsx-runtime": ["./utils/utils.ts"]
     },
     "jsx": "react-jsx",
-    "jsxImportSource": "@utils"
+    "jsxImportSource": "@utils",
+    "ignoreDeprecations": "6.0"
   }
 }

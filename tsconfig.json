@@ -13,6 +13,7 @@
     "plugins": [
       {"name": "typescript-eslint-language-service"}
     ],
+    "types": ["node"],
     "isolatedModules": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,

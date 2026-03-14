@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools==70.3.0"]
+requires = ["setuptools==80.10.2"]
 build-backend = "setuptools.build_meta"
 
 [tool.bandit]
@@ -29,7 +29,7 @@ warn_unreachable = true
 # disallow_any_explicit = true
 # disallow_any_decorated = true
 disallow_any_unimported = true
-plugins = "numpy.typing.mypy_plugin"
+plugins = "mypy_plugin_lxml.main"
 enable_error_code = [
   # "explicit-override",
   "ignore-without-code",
