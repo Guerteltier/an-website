@@ -13,10 +13,9 @@
 
 """The tests for the TraversableStaticFileHandler."""
 
-from __future__ import annotations
 
 import gzip
-import sys
+from compression import zstd
 
 from an_website import DIR as ROOT_DIR
 from an_website.utils.fix_static_path_impl import recurse_directory
@@ -27,12 +26,6 @@ from . import (  # noqa: F401  # pylint: disable=unused-import
     assert_valid_response,
     fetch,
 )
-
-if sys.version_info >= (3, 14):
-    from compression import zstd
-else:
-    from backports import zstd
-
 
 STATIC_DIR = ROOT_DIR / "static"
 CACHE_CONTROL = f"public,immutable,max-age={86400 * 365 * 10}"

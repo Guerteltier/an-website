@@ -13,7 +13,6 @@
 
 """Get a random quote for a given day."""
 
-from __future__ import annotations
 
 import logging
 from datetime import date, datetime, timedelta, timezone

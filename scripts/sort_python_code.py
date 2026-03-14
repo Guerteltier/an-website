@@ -15,7 +15,6 @@
 
 """Sort all the Python code in this repo."""
 
-from __future__ import annotations
 
 import ast
 import os

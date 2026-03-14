@@ -13,7 +13,6 @@
 
 """Useful stuff for handling static files."""
 
-from __future__ import annotations
 
 import logging
 import sys

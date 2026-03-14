@@ -13,7 +13,6 @@
 
 """The utilities package with many helpful things used by other modules."""
 
-from __future__ import annotations
 
 import sys
 

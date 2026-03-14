@@ -13,7 +13,6 @@
 
 """The tests for the uptime page."""
 
-from __future__ import annotations
 
 from an_website import UPTIME
 from an_website.uptime import uptime

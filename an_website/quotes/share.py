@@ -13,7 +13,6 @@
 
 """Share page to share quotes on multiple services."""
 
-from __future__ import annotations
 
 from urllib.parse import quote
 

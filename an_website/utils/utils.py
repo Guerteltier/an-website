@@ -13,7 +13,6 @@
 
 """A module with many useful things used by other modules."""
 
-from __future__ import annotations
 
 import argparse
 import asyncio

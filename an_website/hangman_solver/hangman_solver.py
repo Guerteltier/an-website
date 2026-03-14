@@ -13,7 +13,6 @@
 
 """A page that helps solving hangman puzzles."""
 
-from __future__ import annotations
 
 from dataclasses import dataclass
 

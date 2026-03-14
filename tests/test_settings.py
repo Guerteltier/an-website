@@ -13,7 +13,6 @@
 
 """The tests for the request handlers of an-website."""
 
-from __future__ import annotations
 
 import itertools
 import urllib.parse

@@ -13,7 +13,6 @@
 
 """A page that tells users their IP address."""
 
-from __future__ import annotations
 
 from ipaddress import ip_address
 

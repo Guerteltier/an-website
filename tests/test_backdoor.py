@@ -13,7 +13,6 @@
 
 """The tests for the backdoor."""
 
-from __future__ import annotations
 
 import pickle  # nosec: B403
 from collections.abc import Callable

@@ -33,7 +33,7 @@ extension-pkg-allow-list=
     orjson,
     pycurl,
 recursive=yes
-py-version=3.12
+py-version=3.14
 # temporary bugfix
 ignored-modules=
     abc,

@@ -13,7 +13,6 @@
 
 """A page that allows users to contact the website operator."""
 
-from __future__ import annotations
 
 import asyncio
 import logging

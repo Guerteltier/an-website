@@ -14,14 +14,12 @@
 
 """Patches that improve everything."""
 
-from __future__ import annotations
 
 import asyncio
 import http.client
 import json as stdlib_json  # pylint: disable=preferred-module
 import logging
 import os
-import sys
 from collections.abc import Callable
 from configparser import RawConfigParser
 from contextlib import suppress
@@ -155,7 +153,7 @@ def patch_http() -> None:
 
 def patch_json() -> None:
     """Replace json with orjson."""
-    if getattr(stdlib_json, "_omegajson", False) or sys.version_info < (3, 12):
+    if getattr(stdlib_json, "_omegajson", False):
         return
     stdlib_json.dumps = json.dumps
     stdlib_json.dump = json.dump  # type: ignore[assignment]

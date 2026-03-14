@@ -13,7 +13,6 @@
 
 """Create the required stuff for the soundboard from the info in info.json."""
 
-from __future__ import annotations
 
 from typing import Final
 

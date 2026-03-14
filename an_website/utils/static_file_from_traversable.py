@@ -13,7 +13,6 @@
 # under the License.
 
 """A static file handler for the Traversable abc."""
-from __future__ import annotations
 
 import contextlib
 import logging

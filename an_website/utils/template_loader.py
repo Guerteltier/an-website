@@ -13,7 +13,6 @@
 
 """A Tornado template loader."""
 
-from __future__ import annotations
 
 import os.path
 from importlib.resources.abc import Traversable

@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """A page that helps solving hangman puzzles."""
-
-from __future__ import annotations

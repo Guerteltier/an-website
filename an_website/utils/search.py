@@ -13,7 +13,6 @@
 
 """Module used for easy and simple searching in O(n) complexity."""
 
-from __future__ import annotations
 
 import dataclasses
 from collections.abc import Callable, Iterable, Iterator, Sequence

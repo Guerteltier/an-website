@@ -18,7 +18,6 @@ The website of the AN.
 Loads config and modules and starts Tornado.
 """
 
-from __future__ import annotations
 
 import asyncio
 import atexit
@@ -996,11 +995,7 @@ def main(  # noqa: C901  # pragma: no cover
     )
 
     if processes < 0:
-        processes = (
-            os.process_cpu_count()  # type: ignore[attr-defined]
-            if sys.version_info >= (3, 13)
-            else os.cpu_count()
-        ) or 0
+        processes = os.process_cpu_count() or 0
 
     worker: None | int = None
 
@@ -1079,7 +1074,7 @@ def main(  # noqa: C901  # pragma: no cover
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-    if sys.version_info >= (3, 13) and not loop.get_task_factory():
+    if not loop.get_task_factory():
         loop.set_task_factory(asyncio.eager_task_factory)
 
     if perf8 and "PERF8" in os.environ:

@@ -13,7 +13,6 @@
 
 """The soundboard of the website."""
 
-from __future__ import annotations
 
 from collections.abc import Callable, Iterable
 from functools import cache

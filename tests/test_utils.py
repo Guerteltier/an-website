@@ -13,7 +13,6 @@
 
 """The tests for the utils module."""
 
-from __future__ import annotations
 
 from urllib.parse import urlsplit
 

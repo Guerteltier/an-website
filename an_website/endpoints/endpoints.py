@@ -13,7 +13,6 @@
 
 """Show a list of all API endpoints."""
 
-from __future__ import annotations
 
 from typing import ClassVar, cast
 

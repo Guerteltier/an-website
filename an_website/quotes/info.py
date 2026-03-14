@@ -13,7 +13,6 @@
 
 """Info page to show information about authors and quotes."""
 
-from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta, timezone

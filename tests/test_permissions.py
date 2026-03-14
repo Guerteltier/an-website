@@ -13,7 +13,6 @@
 
 """The tests for the permission system of an-website."""
 
-from __future__ import annotations
 
 import socket
 

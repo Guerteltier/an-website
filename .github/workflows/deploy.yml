@@ -48,7 +48,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: 3.14
       - name: Install build frontend
         run: pip install "build==1.*"
       - name: Build
@@ -71,7 +71,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: 3.14
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -97,14 +97,13 @@ jobs:
       - build
       - build-source-tarball
     permissions: {}
-    continue-on-error: ${{ matrix.python-version == 3.14 }}
+    continue-on-error: ${{ matrix.python-version == 3.15 }}
     strategy:
       fail-fast: false
       matrix:
         python-version:
-          - 3.12.7  # EL10
-          - 3.13
-          - 3.14    # π
+          - 3.14  # π
+          - 3.15
         distribution:
           - name: wheel
             glob: '*.whl'
@@ -187,7 +186,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: 3.14
       - name: Install build
         run: pip install build
       - name: Build from tarball
@@ -214,14 +213,13 @@ jobs:
       contents: read
     needs:
       - build
-    continue-on-error: ${{ matrix.python-version == 3.14 }}
+    continue-on-error: ${{ matrix.python-version == 3.15 }}
     strategy:
       fail-fast: false
       matrix:
         python-version:
-          - 3.12.7  # EL10
-          - 3.13
-          - 3.14    # π
+          - 3.14  # π
+          - 3.15
     services:
       redis:
         image: docker.io/redis/redis-stack-server:6.2.6-v20
@@ -258,14 +256,13 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
-    continue-on-error: ${{ matrix.python-version == 3.14 }}
+    continue-on-error: ${{ matrix.python-version == 3.15 }}
     strategy:
       fail-fast: false
       matrix:
         python-version:
-          - 3.12.7  # EL10
-          - 3.13
-          - 3.14    # π
+          - 3.14  # π
+          - 3.15
     services:
       redis:
         image: docker.io/redis/redis-stack-server:6.2.6-v20
@@ -307,7 +304,7 @@ jobs:
       - name: Install requirements
         run: pip install . && pip uninstall -y an-website
       - name: Install stuff needed for the tests
-        run: grep "^pytest-" pip-constraints.txt | xargs pip install -c pip-constraints.txt html5lib pytest time-machine "backports.zstd; python_version < '3.14'"
+        run: grep "^pytest-" pip-constraints.txt | xargs pip install -c pip-constraints.txt html5lib pytest time-machine
       # - name: Run pytest with -Xdev
       #   run: python3 -Xdev -Xwarn_default_encoding -m pytest
       - name: Run pytest
@@ -338,7 +335,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: 3.14
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
@@ -387,7 +384,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: 3.14
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
@@ -418,7 +415,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: 3.14
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
@@ -507,17 +504,17 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12.7
+          python-version: 3.14
           cache: pip
           cache-dependency-path: Pipfile.lock
       - name: Download coverage
         uses: actions/download-artifact@v4
         with:
-          name: coverage-3.12.7
+          name: coverage-3.14
       - name: Download file hashes
         uses: actions/download-artifact@v4
         with:
-          name: file-hashes-wheel-3.12.7
+          name: file-hashes-wheel-3.14
       - name: Make directory
         run: mkdir github-pages
       - name: Move file hashes
@@ -574,7 +571,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: 3.14
       - name: Install Setuptools
         run: pip install "setuptools==80.10.2"
       - name: Download artifact

@@ -15,7 +15,6 @@
 
 """This script is useful for creating commits."""
 
-from __future__ import annotations
 
 import os
 import subprocess  # nosec: B404

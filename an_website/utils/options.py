@@ -13,7 +13,6 @@
 
 """Options in this module are configurable when accessing the website."""
 
-from __future__ import annotations
 
 import dataclasses
 import typing

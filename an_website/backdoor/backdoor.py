@@ -13,7 +13,6 @@
 
 """The backdoor API of the website."""
 
-from __future__ import annotations
 
 import io
 import logging

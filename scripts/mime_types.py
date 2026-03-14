@@ -15,7 +15,6 @@
 
 """Generate content_types.json and media_types.json."""
 
-from __future__ import annotations
 
 import asyncio
 import json  # pylint: disable=preferred-module

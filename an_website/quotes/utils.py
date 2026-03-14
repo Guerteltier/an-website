@@ -13,7 +13,6 @@
 
 """A page with wrong quotes."""
 
-from __future__ import annotations
 
 import abc
 import asyncio

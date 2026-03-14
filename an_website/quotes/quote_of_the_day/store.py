@@ -13,7 +13,6 @@
 
 """Stores that contain the ids of old quotes of the day."""
 
-from __future__ import annotations
 
 import abc
 from datetime import date, datetime, timezone

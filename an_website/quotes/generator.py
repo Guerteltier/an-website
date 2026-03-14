@@ -13,7 +13,6 @@
 
 """Generate quotes and authors for users to make their own wrong quotes."""
 
-from __future__ import annotations
 
 import random
 

@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """A redirect to an external wiki about the AN."""
-
-from __future__ import annotations

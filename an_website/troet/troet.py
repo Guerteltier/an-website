@@ -13,7 +13,6 @@
 
 """Toot cool stuff to the world."""
 
-from __future__ import annotations
 
 from urllib.parse import urlencode, urlsplit
 

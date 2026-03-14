@@ -13,7 +13,6 @@
 
 """A module with useful decorators."""
 
-from __future__ import annotations
 
 import contextlib
 import logging

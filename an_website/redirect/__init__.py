@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """The redirect page of the website."""
-
-from __future__ import annotations

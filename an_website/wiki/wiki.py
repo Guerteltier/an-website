@@ -13,7 +13,6 @@
 
 """A redirect to an external wiki about the AN."""
 
-from __future__ import annotations
 
 from typing import Final
 

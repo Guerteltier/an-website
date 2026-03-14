@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 skips = ["B101", "B311", "B413"]
 
 [tool.black]
-target-version = ["py312", "py313", "py314"]
+target-version = ["py314"]
 line-length = 80
 uppercase-unicode-escapes = true
 
@@ -15,7 +15,7 @@ atomic = true
 combine_as_imports = true
 line_length = 80
 profile = "black"
-py_version = "312"
+py_version = "314"
 remove_redundant_aliases = true
 skip_gitignore = true
 
@@ -23,7 +23,7 @@ skip_gitignore = true
 strict = true
 strict_bytes = true
 sqlite_cache = true
-python_version = "3.12"
+python_version = "3.14"
 warn_unreachable = true
 # disallow_any_expr = true
 # disallow_any_explicit = true

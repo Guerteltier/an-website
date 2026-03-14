@@ -30,7 +30,7 @@ generate.
 You need:
 
 - Git (obviously)
-- CPython 3.12+
+- CPython 3.14+
 - Packages from pip-dev-requirements.txt
 - C and C++ compiler for some of the dependencies
 - Depending on the used version of CPython: Rust
@@ -57,13 +57,13 @@ You need:
 
 You need:
 
-- CPython 3.12+
+- CPython 3.14+
 - C and C++ compiler for some of the dependencies
 - Depending on the used version of CPython: Rust
 - Supervisord
 - Redis 6.2
 - redis-cell (for ratelimits)
-- Elasticsearch 8.12+
+- Elasticsearch 8.19+
 - UwUFetch
 
 How:

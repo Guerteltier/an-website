@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """The API for updating the website."""
-
-from __future__ import annotations

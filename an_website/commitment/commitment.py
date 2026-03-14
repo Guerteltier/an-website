@@ -17,7 +17,6 @@ Get cool commit messages.
 Based on: https://github.com/ngerakines/commitment
 """
 
-from __future__ import annotations
 
 import logging
 import random

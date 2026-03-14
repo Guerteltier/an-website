@@ -13,7 +13,6 @@
 
 """The API for updating the website."""
 
-from __future__ import annotations
 
 import asyncio
 import logging

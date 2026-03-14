@@ -15,7 +15,6 @@
 
 """This script compresses static files in a folder in place."""
 
-from __future__ import annotations
 
 import abc
 import sys
@@ -110,12 +109,8 @@ class ZstdFileCompressor(FileCompressor):
     @override
     def compress_bytes(self, data: bytes) -> Iterable[bytes]:
         """Compress bytes."""
-        if sys.version_info >= (3, 14):
-            # pylint: disable-next=import-outside-toplevel
-            from compression import zstd
-        else:
-            # pylint: disable-next=import-outside-toplevel
-            from backports import zstd
+        # pylint: disable-next=import-outside-toplevel
+        from compression import zstd
 
         yield zstd.compress(data, level=22)
 
@@ -130,14 +125,7 @@ class ZstdFileCompressor(FileCompressor):
 
     def get_missing_dependencies(self) -> Iterable[str]:
         """Get the missing dependencies."""
-        if sys.version_info >= (3, 14):
-            return
-        try:
-            # pylint: disable-next=import-outside-toplevel
-            from backports import zstd as _  # noqa: F401
-        except ImportError as exc:
-            assert exc.name == "backports"
-            yield "backports.zstd"
+        return ()
 
 
 def compress_dir(

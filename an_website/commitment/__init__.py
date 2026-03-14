@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """Get cool commit messages."""
-
-from __future__ import annotations

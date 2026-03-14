@@ -13,7 +13,6 @@
 
 """A module providing special auth tokens."""
 
-from __future__ import annotations
 
 import hmac
 import math

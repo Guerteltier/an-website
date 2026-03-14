@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """A page that tells users their IP address."""
-
-from __future__ import annotations

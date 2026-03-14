@@ -14,7 +14,6 @@
 
 """Utilities used by the tests of an-website."""
 
-from __future__ import annotations
 
 import sys
 from os.path import abspath, dirname

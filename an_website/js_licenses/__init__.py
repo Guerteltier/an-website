@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """A page with all the JavaScript files and their licenses."""
-
-from __future__ import annotations

@@ -13,7 +13,6 @@
 
 """A page that swaps words."""
 
-from __future__ import annotations
 
 from .. import GH_ORG_URL
 from ..utils.utils import ModuleInfo, PageInfo

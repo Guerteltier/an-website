@@ -13,7 +13,6 @@
 
 """A 🆒 chat."""
 
-from __future__ import annotations
 
 from ..utils.utils import ModuleInfo
 from .chat import (

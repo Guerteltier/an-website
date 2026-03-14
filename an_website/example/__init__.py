@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """EXAMPLE."""
-
-from __future__ import annotations

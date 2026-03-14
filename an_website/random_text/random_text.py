@@ -13,7 +13,6 @@
 
 """The random text API of the website."""
 
-from __future__ import annotations
 
 from dataclasses import dataclass
 from random import Random

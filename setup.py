@@ -17,7 +17,6 @@
 
 """Nobody inspects the spammish repetition."""
 
-from __future__ import annotations
 
 import os
 import sys
@@ -58,7 +57,7 @@ classifiers = [
     ),
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython",
     "Typing :: Typed",
 ]
@@ -241,7 +240,7 @@ dist = setup(
     name="an-website",
     packages=["an_website"],
     platforms="OS Independent",
-    python_requires=">=3.12",
+    python_requires=">=3.14",
     url="https://github.com/asozialesnetzwerk/an-website",
     version=get_version(),
     zip_safe=True,

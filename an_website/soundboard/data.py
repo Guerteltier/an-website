@@ -13,7 +13,6 @@
 
 """Create the required stuff for the soundboard from the info in info.json."""
 
-from __future__ import annotations
 
 import email.utils
 from collections.abc import Callable

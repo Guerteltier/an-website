@@ -13,7 +13,6 @@
 
 """The random text API of the website."""
 
-from __future__ import annotations
 
 from typing import Final
 

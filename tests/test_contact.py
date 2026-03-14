@@ -13,7 +13,6 @@
 
 """The tests for the contact page."""
 
-from __future__ import annotations
 
 import asyncio
 import random

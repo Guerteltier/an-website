@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """A page with a list of services that are cool and hosted by us."""
-
-from __future__ import annotations

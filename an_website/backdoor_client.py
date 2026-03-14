@@ -15,7 +15,6 @@
 
 """The client for the backdoor API of the website."""
 
-from __future__ import annotations
 
 import ast
 import asyncio

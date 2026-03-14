@@ -13,7 +13,6 @@
 
 """The Reporting API™️ of the website."""
 
-from __future__ import annotations
 
 import logging
 from datetime import timedelta

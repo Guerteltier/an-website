@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """Toot cool stuff to the world."""
-
-from __future__ import annotations

@@ -12,5 +12,3 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """A page that allows users to contact the website operator."""
-
-from __future__ import annotations

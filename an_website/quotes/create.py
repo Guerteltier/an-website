@@ -13,7 +13,6 @@
 
 """A page to create new wrong quotes."""
 
-from __future__ import annotations
 
 import logging
 from dataclasses import dataclass

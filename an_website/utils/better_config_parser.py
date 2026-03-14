@@ -12,7 +12,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """A config parser with the ability to parse command-line arguments."""
-from __future__ import annotations
 
 import argparse
 import logging

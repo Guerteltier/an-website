@@ -15,7 +15,6 @@
 
 """⠗⡰⠓"""
 
-from __future__ import annotations
 
 from codecs import CodecInfo, register
 

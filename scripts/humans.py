@@ -16,7 +16,6 @@
 
 """Generates a humans.txt file."""
 
-from __future__ import annotations
 
 import re  # pylint: disable=preferred-module
 import sys

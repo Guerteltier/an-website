@@ -13,7 +13,6 @@
 
 """The settings page used to change settings."""
 
-from __future__ import annotations
 
 import contextlib
 import types

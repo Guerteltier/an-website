@@ -13,7 +13,6 @@
 
 """The tests for the currency converter."""
 
-from __future__ import annotations
 
 import asyncio
 

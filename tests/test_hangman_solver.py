@@ -13,7 +13,6 @@
 
 """The tests for the hangman solver."""
 
-from __future__ import annotations
 
 import pytest
 from hangman_solver import HangmanResult

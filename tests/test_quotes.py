@@ -13,7 +13,6 @@
 
 """The tests for the quotes pages."""
 
-from __future__ import annotations
 
 import urllib.parse
 from datetime import datetime, timezone as tz

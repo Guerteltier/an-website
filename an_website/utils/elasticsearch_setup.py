@@ -11,7 +11,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """Functions for setting up Elasticsearch."""
-from __future__ import annotations
 
 import asyncio
 import logging

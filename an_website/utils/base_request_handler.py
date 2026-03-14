@@ -18,7 +18,6 @@ The base request handler used by other modules.
 This should only contain the BaseRequestHandler class.
 """
 
-from __future__ import annotations
 
 import contextlib
 import inspect

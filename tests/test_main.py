@@ -13,7 +13,6 @@
 
 """The tests for the main module of an-website."""
 
-from __future__ import annotations
 
 import asyncio
 import pathlib
