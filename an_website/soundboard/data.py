@@ -96,6 +96,7 @@ class HeaderInfo(Info):
     """A header with a tag and href to itself."""
 
     tag: str = "h1"
+    # pylint: disable-next=unsubscriptable-object
     type: builtins.type[Book | Chapter | Person] = Book
 
     def to_html(
