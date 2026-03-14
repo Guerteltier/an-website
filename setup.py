@@ -124,7 +124,6 @@ if path("pip-constraints.txt").exists() and (BUILDING or VERSION):
                         "pytest",
                         "html5lib==",
                         "time-machine==",
-                        "backports.zstd==",
                     )
                 )
             )

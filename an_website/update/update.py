@@ -21,7 +21,7 @@ import sys
 from asyncio import Future
 from queue import SimpleQueue
 from tempfile import NamedTemporaryFile, TemporaryDirectory
-from typing import IO, TYPE_CHECKING, Any, ClassVar, Final
+from typing import Any, ClassVar, Final, Protocol
 from urllib.parse import unquote
 
 from tornado.web import stream_request_body
@@ -31,10 +31,24 @@ from ..utils.decorators import requires
 from ..utils.request_handler import APIRequestHandler
 from ..utils.utils import ModuleInfo, Permission
 
-if TYPE_CHECKING:
-    from tempfile import _TemporaryFileWrapper
-
 LOGGER: Final = logging.getLogger(__name__)
+
+
+class TempFile(Protocol):
+    """Should inherit IO[bytes], but that isn't a protocol."""
+
+    def close(self) -> None:
+        """Close the file."""
+
+    def flush(self) -> None:
+        """Flush the data down the skibidi toilet."""
+
+    @property
+    def name(self) -> str:
+        """The name of the file."""
+
+    def write(self, data: bytes, /) -> int:
+        """Write data to the file."""
 
 
 def get_module_info() -> ModuleInfo:
@@ -47,7 +61,7 @@ def get_module_info() -> ModuleInfo:
     )
 
 
-def write_from_queue(file: IO[bytes], queue: SimpleQueue[None | bytes]) -> None:
+def write_from_queue(file: TempFile, queue: SimpleQueue[None | bytes]) -> None:
     """Read from a queue and write to a file."""
     while (chunk := queue.get()) is not None:  # pylint: disable=while-used
         file.write(chunk)
@@ -62,7 +76,7 @@ class UpdateAPI(APIRequestHandler):  # pragma: no cover
     POSSIBLE_CONTENT_TYPES: ClassVar[tuple[str, ...]] = ("text/plain",)
 
     dir: TemporaryDirectory[str]
-    file: _TemporaryFileWrapper[bytes]
+    file: TempFile
     queue: SimpleQueue[None | bytes]
     future: Future[Any]
 

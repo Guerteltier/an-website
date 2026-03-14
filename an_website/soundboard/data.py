@@ -13,7 +13,7 @@
 
 """Create the required stuff for the soundboard from the info in info.json."""
 
-
+import builtins
 import email.utils
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -96,7 +96,7 @@ class HeaderInfo(Info):
     """A header with a tag and href to itself."""
 
     tag: str = "h1"
-    type: type[Book | Chapter | Person] = Book
+    type: builtins.type[Book | Chapter | Person] = Book
 
     def to_html(
         self,
