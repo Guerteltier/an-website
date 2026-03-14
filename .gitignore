@@ -9,8 +9,6 @@
 /build
 /dist
 
-/.venv
-/venv
 /logs
 /config.ini
 /.well-known
