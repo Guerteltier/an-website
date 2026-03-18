@@ -6,6 +6,7 @@ import {
     PopStateHandlers,
     post,
     setLastLocation,
+    vt as startViewTransition,
 } from "@utils/utils.js";
 
 function startQuotes() {
@@ -143,6 +144,7 @@ function startQuotes() {
 
     function handleData(
         data: API_DATA,
+        runViewTransition = false,
     ): boolean {
         if (data.status) {
             console.error(data);
@@ -152,26 +154,35 @@ function startQuotes() {
             }
             return false;
         } else if (data.id) {
-            updateQuoteId(data.id);
-            nextQuoteId[0] = data.next;
-            quote.innerText = `»${data.quote}«`;
-            author.innerText = `- ${data.author}`;
-            realAuthor.innerText = data.real_author;
-            realAuthor.href = `/zitate/info/a/${data.real_author_id}${params}`;
-            if (reportButton?.href) {
-                const reportHrefParams = new URLSearchParams(params);
-                reportHrefParams.set(
-                    "subject",
-                    `Das falsche Zitat ${data.id} hat ein Problem`,
-                );
-                reportHrefParams.set(
-                    "message",
-                    `${quote.innerText} ${realAuthor.innerText}`,
-                );
-                reportButton.href = `/kontakt?${reportHrefParams.toString()}`;
+            const updateData = () => {
+                updateQuoteId(data.id);
+                nextQuoteId[0] = data.next;
+                quote.innerText = `»${data.quote}«`;
+                author.innerText = `- ${data.author}`;
+                realAuthor.innerText = data.real_author;
+                realAuthor.href =
+                    `/zitate/info/a/${data.real_author_id}${params}`;
+                if (reportButton?.href) {
+                    const reportHrefParams = new URLSearchParams(params);
+                    reportHrefParams.set(
+                        "subject",
+                        `Das falsche Zitat ${data.id} hat ein Problem`,
+                    );
+                    reportHrefParams.set(
+                        "message",
+                        `${quote.innerText} ${realAuthor.innerText}`,
+                    );
+                    reportButton.href =
+                        `/kontakt?${reportHrefParams.toString()}`;
+                }
+                updateRating(data.rating);
+                updateVote(data.vote);
+            };
+            if (runViewTransition) {
+                startViewTransition(updateData);
+            } else {
+                updateData();
             }
-            updateRating(data.rating);
-            updateVote(data.vote);
             return true;
         }
         return false;
@@ -188,31 +199,42 @@ function startQuotes() {
         url: string;
     }
 
-    nextButton.onclick = () =>
-        get(
-            `/api/zitate/${nextQuoteId[0]}`.replace(/\/$/, ""),
-            params,
-            (data: POP_STATE_API_DATA) => {
-                if (![200, 420, 429, undefined].includes(data.status)) {
-                    if (nextQuoteId[0] === "") {
-                        alert("Zitat konnte nicht abgerufen werden.");
-                    } else {
-                        // Set nextQuoteId to empty string to get a random next quote
-                        nextQuoteId[0] = "";
-                        nextButton.click();
-                    }
-                    return;
-                }
-                if (!handleData(data)) {
-                    return;
-                }
+    let nextButtenEnabled = true;
+    nextButton.onclick = async () => {
+        if (!nextButtenEnabled) {
+            return;
+        }
 
-                data.stateType = "quotes";
-                data.url = `/zitate/${data.id}${params}`;
-                history.pushState(data, "Falsche Zitate", data.url);
-                setLastLocation(data.url);
-            },
-        );
+        nextButtenEnabled = false;
+        try {
+            await get(
+                `/api/zitate/${nextQuoteId[0]}`.replace(/\/$/, ""),
+                params,
+                (data: POP_STATE_API_DATA) => {
+                    if (![200, 420, 429, undefined].includes(data.status)) {
+                        if (nextQuoteId[0] === "") {
+                            alert("Zitat konnte nicht abgerufen werden.");
+                        } else {
+                            // Set nextQuoteId to empty string to get a random next quote
+                            nextQuoteId[0] = "";
+                            nextButton.click();
+                        }
+                        return;
+                    }
+                    if (!handleData(data, true)) {
+                        return;
+                    }
+
+                    data.stateType = "quotes";
+                    data.url = `/zitate/${data.id}${params}`;
+                    history.pushState(data, "Falsche Zitate", data.url);
+                    setLastLocation(data.url);
+                },
+            );
+        } finally {
+            nextButtenEnabled = true;
+        }
+    };
 
     const vote = (vote: string): Promise<void> =>
         post(

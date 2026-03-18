@@ -39,6 +39,20 @@ export function post(
         .catch(onerror);
 }
 
+export function vt(action: () => void | Promise<void>): void {
+    const vtSupported = !!(window.CSSViewTransitionRule as object | undefined &&
+        d.startViewTransition as object | undefined);
+    const vtActivated = d.documentElement.getAttribute("data-effects") === "1";
+
+    console.debug({ vtSupported, vtActivated, action });
+
+    if (vtSupported && vtActivated) {
+        d.startViewTransition(action);
+    } else {
+        void action();
+    }
+}
+
 export function get(
     url: string,
     params: Record<string, string> | string = {},

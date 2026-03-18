@@ -6,6 +6,7 @@ import {
     hideSitePane,
     PopStateHandlers,
     setLastLocation,
+    vt as startViewTransition,
 } from "@utils/utils.js";
 
 const contentContainer = getElementById("main") as HTMLDivElement;
@@ -29,7 +30,7 @@ interface DynloadData {
 function dynLoadOnData(
     data: DynloadData | undefined,
     onpopstate: boolean,
-) {
+): true | undefined {
     if (!data) {
         console.error("No data received");
         return;
@@ -43,6 +44,7 @@ function dynLoadOnData(
         console.error("No URL in data ", data);
         return;
     }
+
     console.log("Handling data", data);
     if (!onpopstate) {
         if (lastLoaded.length === 1 && lastLoaded[0] === url) {
@@ -61,6 +63,14 @@ function dynLoadOnData(
         return;
     }
 
+    startViewTransition(() => {
+        updateHtml(data);
+    });
+
+    return true;
+}
+
+function updateHtml(data: DynloadData): void {
     // d.onkeyup = () => {}; // not used in any JS file
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     d.onkeydown = () => {}; // remove keydown listeners
@@ -101,10 +111,9 @@ function dynLoadOnData(
         titleElement.innerText = data.title;
     }
     urlData = data;
-    return true;
 }
 
-function dynLoad(url: string) {
+function dynLoad(url: string): Promise<void> {
     console.log("Loading URL", url);
     history.replaceState( // save current scrollPos
         {
@@ -122,7 +131,10 @@ function dynLoad(url: string) {
     return dynLoadSwitchToURL(url);
 }
 
-async function dynLoadSwitchToURL(url: string, allowSameUrl = false) {
+async function dynLoadSwitchToURL(
+    url: string,
+    allowSameUrl = false,
+): Promise<void> {
     if (!allowSameUrl && url === location.href) {
         console.log("URL is the same as current, just hide site pane");
         hideSitePane();
@@ -134,7 +146,9 @@ async function dynLoadSwitchToURL(url: string, allowSameUrl = false) {
     await get(
         url,
         "",
-        (data: DynloadData) => dynLoadOnData(data, false),
+        (data: DynloadData) => {
+            dynLoadOnData(data, false);
+        },
         (error: unknown) => {
             console.log(error);
             if (url === location.href) {
@@ -147,10 +161,11 @@ async function dynLoadSwitchToURL(url: string, allowSameUrl = false) {
     );
 }
 
-async function dynLoadOnPopState(event: PopStateEvent) {
+async function dynLoadOnPopState(event: PopStateEvent): Promise<void> {
     if (event.state) {
         const state = event.state as DynloadData;
         console.log("Popstate", state);
+
         if (
             !((event.state as { data: string }).data &&
                 dynLoadOnData(state, true))
