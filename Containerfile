@@ -6,7 +6,16 @@ ARG BASE=docker.io/library/python:3.14-slim-trixie
 FROM $BASE AS builder
 RUN set -eux \
  && apt-get update \
- && apt-get install -y --no-install-recommends g++ git libcurl4-gnutls-dev \
+ && apt-get install -y --no-install-recommends curl g++ git libcurl4-gnutls-dev make \
+ && curl -sSfLo uwufetch.tar.gz https://codeload.github.com/ad-oliviero/uwufetch/tar.gz/f3d4503e72fa5b7dff466e527453cfbf2c95cc01 \
+ && tar xvf uwufetch.tar.gz \
+ && cd uwufetch-* \
+ && make release \
+ && mv uwufetch_-linux /built-uwufetch \
+ && cd .. \
+ && rm -fr uwufetch* \
+ && mv /built-uwufetch /uwufetch \
+ && apt-get purge -y --autoremove curl make \
  && rm -fr /var/lib/apt/lists/*
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_ROOT_USER_ACTION=ignore \
@@ -25,17 +34,13 @@ WORKDIR /usr/src/an-website
 RUN /venv/bin/pip install --no-deps .
 
 FROM $BASE
-RUN set -eux \
+RUN --mount=type=bind,from=builder,source=/uwufetch,target=/uwufetch set -eux \
  && apt-get update \
- && apt-get install -y --no-install-recommends curl libcurl3t64-gnutls \
+ && apt-get install -y --no-install-recommends libcurl3t64-gnutls \
  && rm -fr /var/lib/apt/lists/* \
- && curl -sSfLo uwufetch_2.1-linux.tar.gz https://github.com/ad-oliviero/uwufetch/releases/download/2.1/uwufetch_2.1-linux.tar.gz \
- && apt-get purge -y --autoremove curl \
- && tar xvf uwufetch_2.1-linux.tar.gz \
- && cd uwufetch_2.1-linux \
- && bash install.sh \
- && cd .. \
- && rm -fr uwufetch* \
+ && cd /uwufetch \
+ && ./install.sh \
+ && cd - \
  && mkdir /data
 COPY --from=builder /venv /venv
 WORKDIR /data
