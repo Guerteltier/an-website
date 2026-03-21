@@ -274,3 +274,16 @@ jobs:
           version: v0.11.0
           check_together: yes
           ignore_names: screenfetch
+
+  docker:
+    name: Check Containerfile
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v5
+      - name: Check Containerfile
+        run: docker build --check -f Containerfile .
