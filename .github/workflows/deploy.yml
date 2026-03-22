@@ -18,7 +18,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           filter: blob:none
           fetch-depth: 0
@@ -42,11 +42,11 @@ jobs:
       - prepare-build
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Install build frontend
@@ -56,7 +56,7 @@ jobs:
       - name: Hash
         run: sha256sum dist/*
       - name: Upload as build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           path: dist
 
@@ -69,11 +69,11 @@ jobs:
       - prepare-build
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Run setup.py
@@ -85,7 +85,7 @@ jobs:
       - name: Compress tar
         run: pigz -11 an-website.tar
       - name: Upload as build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           path: an-website.tar.gz
           name: source-tarball
@@ -113,7 +113,7 @@ jobs:
             glob: an-website.tar.gz
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
@@ -149,7 +149,7 @@ jobs:
         timeout-minutes: 1
         run: an-website --version --verbose --verbose | tee hashes.txt
       - name: Upload file hashes as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           path: hashes.txt
           if-no-files-found: error
@@ -184,7 +184,7 @@ jobs:
         with:
           name: source-tarball
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Install build
@@ -227,7 +227,7 @@ jobs:
           - 6379:6379
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
@@ -289,11 +289,11 @@ jobs:
       #       mapper-murmur3
       #       mapper-annotated-text
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
@@ -311,7 +311,7 @@ jobs:
         timeout-minutes: 5
         run: pytest --durations=0 --verbose --cov --cov-report=term:skip-covered
       - name: Upload coverage as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           path: .coverage
           if-no-files-found: error
@@ -333,7 +333,7 @@ jobs:
     if: github.event_name == 'schedule' || (github.ref_type == 'tag' && github.event_name == 'push')
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Download artifact
@@ -382,7 +382,7 @@ jobs:
     permissions: {}
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Download artifact
@@ -413,7 +413,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Download artifact
@@ -472,7 +472,7 @@ jobs:
           curl -sSf -T *.whl https://asozial.org/api/update/ \
             -H "Authorization: ${{ secrets.UPDATE_API_SECRET }}"
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Check deployment
         uses: ./.github/actions/check_deployment
         with:
@@ -497,12 +497,12 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
           cache: pip
@@ -553,7 +553,7 @@ jobs:
       packages: write
     steps:
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ~1.20
       - name: Install Netavark
@@ -576,7 +576,7 @@ jobs:
         env:
           VERSION: 0.5.5
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Install Setuptools
@@ -599,7 +599,7 @@ jobs:
       - name: Save image
         run: sudo buildah push --all --format=oci --compression-format=zstd:chunked --compression-level=20 an-website "oci-archive:oci-archive-${{ matrix.os.arch }}.tar"
       - name: Upload as build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: oci-image-${{ matrix.os.arch }}
           path: oci-archive-${{ matrix.os.arch }}.tar
@@ -613,7 +613,7 @@ jobs:
       packages: write
     steps:
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ~1.20
       - name: Install Netavark
@@ -633,7 +633,7 @@ jobs:
           pattern: oci-image-*
           merge-multiple: true
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Create manifest with annotations
@@ -670,7 +670,7 @@ jobs:
       - name: Push manifest
         run: sudo buildah manifest push --compression-level 20 --add-compression zstd:chunked --compression-format zstd:chunked --all an-website "oci-archive:oci-archive.tar"
       - name: Upload as build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: oci-image
           path: oci-archive.tar
@@ -723,7 +723,7 @@ jobs:
           - 6379:6379
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
@@ -743,7 +743,7 @@ jobs:
       packages: write
     steps:
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ~1.20
       - name: Upgrade Skopeo
