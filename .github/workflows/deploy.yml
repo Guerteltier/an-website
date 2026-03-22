@@ -569,12 +569,12 @@ jobs:
           popd
       - name: Download youki
         run: |
-          wget "https://github.com/containers/youki/releases/download/v${VERSION}/youki-${VERSION}-${{ matrix.os.arch }}-musl.tar.gz"
+          wget "https://github.com/youki-dev/youki/releases/download/v${VERSION}/youki-${VERSION}-${{ matrix.os.arch }}-musl.tar.gz"
           tar xOf "youki-${VERSION}-${{ matrix.os.arch }}-musl.tar.gz" youki > /opt/youki
           rm -f "youki-${VERSION}-${{ matrix.os.arch }}-musl.tar.gz"
           chmod +x /opt/youki
         env:
-          VERSION: 0.5.5
+          VERSION: 0.6.0
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
