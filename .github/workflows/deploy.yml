@@ -555,13 +555,13 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: ~1.20
+          go-version: ~1.26
       - name: Install Netavark
         run: sudo apt-get install --update -y netavark
       - name: Upgrade Buildah
         run: |
           sudo apt-get install -y libapparmor-dev libdevmapper-dev libglib2.0-dev libgpgme-dev libseccomp-dev libselinux1-dev
-          git clone -b v1.35.5 --depth=1 https://github.com/containers/buildah.git ~/go/src/github.com/containers/buildah
+          git clone -b v1.43.0 --depth=1 https://github.com/containers/buildah.git ~/go/src/github.com/containers/buildah
           pushd ~/go/src/github.com/containers/buildah
           make buildah docs
           sudo make install
@@ -591,11 +591,9 @@ jobs:
       - name: Build image
         run: |
           cd an_website-*/
-          sudo ./build-oci-image.sh -t an-website
+          sudo ./build-oci-image.sh --runtime /opt/youki -t an-website
           cd ..
           sudo buildah inspect an-website
-        env:
-          BUILDAH_RUNTIME: /opt/youki
       - name: Save image
         run: sudo buildah push --all --format=oci --compression-format=zstd:chunked --compression-level=20 an-website "oci-archive:oci-archive-${{ matrix.os.arch }}.tar"
       - name: Upload as build artifact
@@ -615,13 +613,13 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: ~1.20
+          go-version: ~1.26
       - name: Install Netavark
         run: sudo apt-get install --update -y netavark
       - name: Upgrade Buildah
         run: |
           sudo apt-get install -y libapparmor-dev libdevmapper-dev libglib2.0-dev libgpgme-dev libseccomp-dev libselinux1-dev
-          git clone -b v1.35.5 --depth=1 https://github.com/containers/buildah.git ~/go/src/github.com/containers/buildah
+          git clone -b v1.43.0 --depth=1 https://github.com/containers/buildah.git ~/go/src/github.com/containers/buildah
           pushd ~/go/src/github.com/containers/buildah
           make buildah docs
           sudo make install
