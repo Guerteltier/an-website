@@ -743,11 +743,11 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: ~1.20
+          go-version: ~1.26
       - name: Upgrade Skopeo
         run: |
           sudo apt-get install --update -y libdevmapper-dev libgpgme-dev
-          git clone -b v1.15.2 --depth=1 https://github.com/containers/skopeo.git ~/go/src/github.com/containers/skopeo
+          git clone -b v1.22.0 --depth=1 https://github.com/containers/skopeo.git ~/go/src/github.com/containers/skopeo
           pushd ~/go/src/github.com/containers/skopeo
           make bin/skopeo
           sudo make install DISABLE_DOCS=1
