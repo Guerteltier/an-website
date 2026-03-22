@@ -38,7 +38,9 @@ buildah build \
   --annotation org.opencontainers.image.licenses="AGPL-3.0-or-later" \
   --annotation org.opencontainers.image.authors="contact@asozial.org" \
   --annotation org.opencontainers.image.vendor="Das Asoziale Netzwerk" \
+  --annotation org.opencontainers.image.created="$(cat TIMESTMP.TXT || true)" \
   --annotation org.opencontainers.image.source="https://github.com/asozialesnetzwerk/an-website" \
+  --annotation org.opencontainers.image.url="https://github.com/asozialesnetzwerk/an-website/pkgs/container/an-website" \
   --annotation org.opencontainers.image.description="podman run --detach --name an-website --network slirp4netns:port_handler=slirp4netns --publish 8888:8888 --volume .:/data:z IMAGE" \
   --annotation org.opencontainers.image.base.digest="${DIGEST}" \
   --annotation org.opencontainers.image.base.name="${NAME}" \
