@@ -1,3 +1,7 @@
+declare global {
+    const DEBUG: boolean;
+}
+
 export const d = document;
 function getElementById(id: string): HTMLElement | null {
     return d.getElementById(id);

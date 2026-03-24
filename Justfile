@@ -29,6 +29,7 @@ build_js_debug *args:
     @just esbuild an_website/*/*[!_].ts an_website/*/*[!_].tsx an_website/*/*/*[!_].ts an_website/*/*/*[!_].tsx \
         --minify --sourcemap \
         --tree-shaking=true \
+        --define:DEBUG=true \
         --loader:.svg=text \
         --jsx-import-source=@utils --jsx=automatic \
         --bundle '--external:/static/*' --legal-comments=inline '--footer:js=// @license-end' \
@@ -39,7 +40,7 @@ build_js_debug *args:
 
 [positional-arguments]
 build_js *args:
-    @just build_js_debug '--pure:console.log' '--pure:console.debug' "$@"
+    @just build_js_debug '--define:DEBUG=false' '--pure:console.log' '--pure:console.debug' "$@"
 
 [positional-arguments]
 esbuild *args:
