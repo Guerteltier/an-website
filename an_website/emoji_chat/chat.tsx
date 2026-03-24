@@ -11,6 +11,7 @@ const openmojiVersion = usingOpenMoji?.getAttribute("openmoji-version");
 let reconnectTimeout = 100;
 let reconnectTries = 0;
 let lastMessage = "";
+let currentUserName: string | null = null;
 
 const timeStampToText = (timestamp: number) => {
     return new Date(timestamp + 1651075200000).toLocaleString();
@@ -77,6 +78,7 @@ const appendMessage = (msg: Message) => {
 
 const displayCurrentUser = (name: string[]) => {
     const id = "current-user";
+    currentUserName = name.join("");
     getElementById(id)!.replaceWith(
         <div className={getOpenMojiType() ? "openmoji" : ""} id={id}>
             {name.map((emoji) => <EmojiComponent emoji={emoji} />)}
@@ -142,8 +144,17 @@ const handleWebSocketData = (event: { data: string }) => {
             break;
         }
         case "message": {
-            // console.debug("New message", data["message"]);
-            appendMessage(data.message);
+            const msg = data.message;
+            if (
+                msg.content.join("") == lastMessage &&
+                msg.author.join("") == currentUserName
+            ) {
+                console.debug("successfully send " + lastMessage);
+                lastMessage = "";
+            } else {
+                console.debug("New message", msg);
+            }
+            appendMessage(msg);
             break;
         }
         case "init": {
@@ -182,6 +193,11 @@ const openWS = () => {
         (location.protocol === "https:" ? "wss:" : "ws:") +
             `//${location.host}/websocket/emoji-chat`,
     );
+
+    if (DEBUG) {
+        (window as unknown as { emojiChatWs: WebSocket }).emojiChatWs = ws;
+    }
+
     const pingInterval = setInterval(() => {
         if (ws.readyState == ws.OPEN) {
             ws.send("");
@@ -189,6 +205,8 @@ const openWS = () => {
     }, 10000);
 
     ws.addEventListener("close", (event) => {
+        resetLastMessage();
+
         clearInterval(pingInterval);
         if (event.wasClean) {
             console.debug(
@@ -233,6 +251,9 @@ const openWS = () => {
     });
 
     messageInputForm.addEventListener("submit", (event) => {
+        if (ws.readyState !== ws.OPEN) {
+            return;
+        }
         if (messageInput.value !== "") {
             lastMessage = messageInput.value;
             ws.send(
