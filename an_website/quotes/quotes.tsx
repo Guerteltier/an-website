@@ -148,7 +148,7 @@ function startQuotes() {
     ): boolean {
         if (data.status) {
             console.error(data);
-            if (data.status in [429, 420]) {
+            if ([429, 420].includes(data.status)) {
                 // ratelimited
                 alert(data.reason);
             }
