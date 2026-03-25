@@ -303,6 +303,12 @@ header {
     transition: right 0.5s;
 }
 
+@media (prefers-reduced-motion: reduce) {
+    #site-pane {
+        transition: right 0s;
+    }
+}
+
 #site-pane[state="open"],
 #site-pane:hover,
 #site-pane:focus-within,
