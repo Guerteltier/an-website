@@ -1,7 +1,3 @@
-@view-transition {
-    navigation: auto;
-}
-
 /* theming */
 html {
     color-scheme: only light;

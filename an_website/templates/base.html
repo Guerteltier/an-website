@@ -43,7 +43,8 @@
         {% end %}
         {% block stylesheets %}{% end %}
     </head>
-    <body>
+    <body>{% if effects %}<style>@view-transition{navigation:auto;}</style>{% end %}
+
         {% if as_html %}
             {% if effects %}
                 {% if display_theme == "christmas" %}
