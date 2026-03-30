@@ -1149,7 +1149,11 @@ class BaseRequestHandler(_RequestHandler):
                 int(self.now_utc.microsecond) % len(CLACKS_OVERHEADS)
             ],
         )
-        self.set_header("Vary", "Accept,Authorization,Cookie")
+        self.set_header("Accept-CH", "Sec-CH-Prefers-Reduced-Motion")
+        self.set_header("Critical-CH", "Sec-CH-Prefers-Reduced-Motion")
+        self.set_header(
+            "Vary", "Accept,Authorization,Cookie,Sec-CH-Prefers-Reduced-Motion"
+        )
 
     set_default_headers.__doc__ = _RequestHandler.set_default_headers.__doc__
 

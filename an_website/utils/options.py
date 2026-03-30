@@ -181,15 +181,15 @@ def is_cautious_user(handler: RequestHandler) -> bool:
 class Options:
     """Options for the website."""
 
-    __slots__ = ("__request_handler",)
+    __slots__ = ("_request_handler",)
 
     theme: Option[str] = StringOption(
         name="theme",
         is_valid=THEMES.__contains__,
-        get_default_value=lambda _: (
+        get_default_value=lambda handler: (
             "default"
             # pylint: disable-next=misplaced-comparison-constant
-            if _.now.month != 4 or 2 <= _.now.day
+            if handler.now.month != 4 or 2 <= handler.now.day
             else "fun"
         ),
         normalize_string=lambda s: s.replace("-", "_").lower(),
@@ -204,7 +204,13 @@ class Options:
     )
     compat: Option[bool] = BoolOption(name="compat", get_default_value=false)
     dynload: Option[bool] = BoolOption(name="dynload", get_default_value=false)
-    effects: Option[bool] = BoolOption(name="effects", get_default_value=true)
+    effects: Option[bool] = BoolOption(
+        name="effects",
+        get_default_value=lambda handler: (
+            handler.request.headers.get("Sec-CH-Prefers-Reduced-Motion")
+            != "reduce"
+        ),
+    )
     openmoji: Option[OpenMojiValue] = Option(
         name="openmoji",
         parse_from_string=parse_openmoji_arg,
@@ -226,7 +232,7 @@ class Options:
 
     def __init__(self, request_handler: brh.BaseRequestHandler) -> None:
         """Initialize the options."""
-        self.__request_handler = request_handler
+        self._request_handler = request_handler
 
     def as_dict(
         self,
@@ -290,4 +296,4 @@ class Options:
     @property
     def request_handler(self) -> brh.BaseRequestHandler:
         """Return the request handler."""
-        return self.__request_handler
+        return self._request_handler

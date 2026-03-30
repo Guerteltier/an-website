@@ -55,7 +55,7 @@ def get_handlers() -> list[Handler]:
             {"root": get_openmoji_data(), "hashes": {}},
         ),
         (
-            r"(?:/static)?/(\.env|favicon\.(?:png|jxl)|humans\.txt|robots\.txt)",
+            r"(?:/static)?/(\.env|favicon\.(?:png|jxl)|humans\.txt|robots\.txt|llms\.txt)",
             TraversableStaticFileHandler,
             {"root": STATIC_DIR, "hashes": FILE_HASHES_DICT},
         ),

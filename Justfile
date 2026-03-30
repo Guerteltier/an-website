@@ -52,6 +52,9 @@ target:
     month = {{ trim_start_match(datetime_utc('%m'), '0') }}
     print(f"es{min(year - (5 + (month < 7)), 2022)}")
 
+browsers:
+    pnpm browserslist-to-esbuild | sed "s| |,|g"
+
 watch_css: (build_css '--watch')
 
 watch_js: (build_js '--watch')

@@ -45,10 +45,15 @@ def main() -> int | str:
     changed_count = 0
     file_count = 0
     for path in Path(REPO_ROOT).rglob("*.py"):
-        if (
-            not path.is_file()
-            or path.is_relative_to(os.path.join(REPO_ROOT, ".git"))
-            or path.is_relative_to(os.path.join(REPO_ROOT, "venv"))
+        if not path.is_file() or any(
+            path.full_match(f"**/{_}/**")
+            for _ in {
+                ".git",
+                "build",
+                "node_modules",
+                "pycurl",
+                "site-packages",
+            }
         ):
             continue
         file_count += 1
