@@ -47,13 +47,13 @@ def main() -> int | str:
     for path in Path(REPO_ROOT).rglob("*.py"):
         if not path.is_file() or any(
             path.full_match(f"**/{_}/**")
-            for _ in {
+            for _ in (
                 ".git",
                 "build",
                 "node_modules",
                 "pycurl",
                 "site-packages",
-            }
+            )
         ):
             continue
         file_count += 1

@@ -35,11 +35,11 @@ def parse(  # noqa: C901  # pylint: disable=too-many-branches
     data: Iterable[Mapping[str, Any]] | Mapping[str, Any] | Any,
     *,
     strict: bool = False,
-) -> T:
+) -> T | None:
     """Parse a data."""
     # pylint: disable=too-many-return-statements, too-complex
     if data is None and type_ is None:
-        return None  # type: ignore[unreachable]
+        return None
 
     simple_type: type = get_origin(type_) or type_
 
@@ -51,7 +51,7 @@ def parse(  # noqa: C901  # pylint: disable=too-many-branches
         return data
 
     if simple_type is Literal:  # type: ignore[comparison-overlap]
-        possible = tuple(typing.get_args(type_))
+        possible = tuple(typing.get_args(type_))  # type: ignore[unreachable]
         for pos in possible:
             if pos == data:
                 return typing.cast(T, pos)
@@ -66,7 +66,7 @@ def parse(  # noqa: C901  # pylint: disable=too-many-branches
         possible = tuple(typing.get_args(type_))
         for pos in possible:
             with contextlib.suppress(ValueError):
-                return typing.cast(T, parse(pos, data, strict=strict))
+                return parse(pos, data, strict=strict)
         raise ValueError(f"Unable to parse {data!r} into {type_}")
 
     if simple_type in {list, "list"} and isinstance(data, list):

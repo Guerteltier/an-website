@@ -2,7 +2,7 @@
 {
   "ts-node": {"esm": true},
   "extends": [
-    "@tsconfig/node20/tsconfig",
+    "@tsconfig/node24/tsconfig",
     "@tsconfig/node-ts/tsconfig",
     "@tsconfig/strictest/tsconfig"
   ],
@@ -18,7 +18,7 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "noUnusedLocals": false,
-    "module": "node18",
+    "module": "node20",
     "checkJs": true
   }
 }

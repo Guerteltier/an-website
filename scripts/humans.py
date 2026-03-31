@@ -147,9 +147,7 @@ def generate_humans_txt() -> str:
 
 def name_to_section_line(name: str, random: Random) -> str:
     """Generate a section line based on the name."""
-    sep1: int
-    sep2: int
-    sep1, sep2 = get_whitespaces(random, 2)  # type: ignore[misc]
+    sep1, sep2 = get_whitespaces(random, 2)  # type: ignore[str-unpack]
     return f"/*{sep1}{name}{sep2}*/{get_whitespaces(random, 0, 4)}"
 
 

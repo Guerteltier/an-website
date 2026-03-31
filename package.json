@@ -16,7 +16,7 @@
     "@pnpm/types": "^1000.9.0",
     "@std/cli": "jsr:^1.0.28",
     "@tsconfig/node-ts": "^23.6.4",
-    "@tsconfig/node20": "^20.1.9",
+    "@tsconfig/node24": "^24.0.4",
     "@tsconfig/strictest": "^2.0.8",
     "@types/audioworklet": "0.0.97",
     "@types/eslint__eslintrc": "^2.1.2",
