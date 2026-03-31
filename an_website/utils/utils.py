@@ -389,35 +389,6 @@ EMOJI_MAPPING: Final[Mapping[str, str]] = {
 }
 
 
-def emojify(string: str) -> Iterable[str]:
-    """Emojify a given string."""
-    non_emojis: list[str] = []
-    for ch in (
-        replace_umlauts(string)
-        .replace("!?", "⁉")
-        .replace("!!", "‼")
-        .replace("10", "\U0001F51F")
-    ):
-        emoji: str | None = None
-        if ch.isascii():
-            if ch.isdigit() or ch in "#*":
-                emoji = f"{ch}\uFE0F\u20E3"
-            elif ch.isalpha():
-                emoji = country_code_to_flag(ch)
-        emoji = EMOJI_MAPPING.get(ch, emoji)
-
-        if emoji is None:
-            non_emojis.append(ch)
-        else:
-            if non_emojis:
-                yield "".join(non_emojis)
-                non_emojis.clear()
-            yield emoji
-
-    if non_emojis:
-        yield "".join(non_emojis)
-
-
 async def geoip(
     ip: None | str,
     database: str = "GeoLite2-City.mmdb",

@@ -85,40 +85,6 @@ def test_country_code_to_flag() -> None:
     assert utils.country_code_to_flag("AQ") == "🇦🇶"
 
 
-def test_emojify() -> None:
-    """Test the emojify function."""
-    assert tuple(utils.emojify("aBc 123 #!*")) == (
-        "🇦",
-        "🇧",
-        "🇨",
-        " ",
-        "1️⃣",
-        "2️⃣",
-        "3️⃣",
-        " ",
-        "#️⃣",
-        "❗",
-        "*️⃣",
-    )
-    assert tuple(utils.emojify("!?!?!!")) == ("⁉", "⁉", "‼")
-    assert tuple(utils.emojify("Üẞ?!")) == ("🇺", "🇪", "🇸", "🇸", "❓", "❗")
-    assert tuple(utils.emojify("2 + 2 - 3 = 0!  ")) == (
-        "2️⃣",
-        " ",
-        "➕",
-        " ",
-        "2️⃣",
-        " ",
-        "➖",
-        " ",
-        "3️⃣",
-        " = ",
-        "0️⃣",
-        "❗",
-        "  ",
-    )
-
-
 def test_n_from_set() -> None:
     """Test the n_from_set function."""
     set_ = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
@@ -181,7 +147,6 @@ if __name__ == "__main__":
     test_anonomyze_ip()
     test_bool_str_conversion()
     test_country_code_to_flag()
-    test_emojify()
     test_n_from_set()
     test_name_to_id()
     test_replace_umlauts()
