@@ -394,9 +394,12 @@ jobs:
             mv an-website*.pyz an-website.pyz
       - name: Test running ${{ matrix.os.arch }} zipapp
         run: |
+            set -xeu
             python3 an-website.pyz --version
+            test \! -d ~/.cache/an-website/zipapps
             chmod +x an-website.pyz
-            ./an-website.pyz -c
+            CLEAR_ZIPAPPS_CACHE= ./an-website.pyz -c
+            test -d ~/.cache/an-website/zipapps
       - name: Install stuff needed for the tests
         run: grep "^pytest-" pip-constraints.txt | xargs pip install -c pip-constraints.txt html5lib pytest time-machine
       - name: Run pytest

@@ -26,6 +26,7 @@ python3 -m zipapps \
   -p '/usr/bin/env python3' \
   -o 'build/an_website.pyz' \
   -up '$HOME/.cache/an-website/zipapps' \
+  --clear-zipapps-cache \
   --rm-patterns '**/__pycache__' \
   -m 'an_website.__main__:main' \
   -r 'pip-requirements.txt' . >&2
