@@ -132,6 +132,8 @@ async def test_static_file_compression(
     fetch: FetchCallable,  # noqa: F811
 ) -> None:
     """Test fetching static files."""
+    assert STATIC_DIR.is_dir()
+
     file_count, gzip_count, zstd_count = 0, 0, 0
 
     for file in recurse_directory(
@@ -196,8 +198,9 @@ async def test_static_file_compression(
             assert decompressed_body
             assert uncompressed_body == decompressed_body
 
-    assert file_count >= gzip_count > 0
-    assert file_count >= zstd_count > 0
+    assert file_count > 20
+    assert file_count >= gzip_count > 5
+    assert file_count >= zstd_count > 5
 
 
 async def test_invalid_paths(
