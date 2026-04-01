@@ -14,11 +14,11 @@ rmdir "build/bdist.linux-${ARCH}" || true
 
 set -x
 
-pip3 install -r pip-requirements.txt >&2
+pip3 install -U dulwich get_version setuptools -c pip-constraints.txt >&2
 
-VERSION="$(python3 -m an_website --version 2> /dev/null)"
+VERSION="$(./setup.py --version)"
 
-pip install -U zipapps -c pip-constraints.txt >&2
+pip3 install -U zipapps -c pip-constraints.txt >&2
 
 # shellcheck disable=SC2016
 python3 -m zipapps \
