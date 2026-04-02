@@ -21,7 +21,7 @@ VERSION="$(./setup.py --version)"
 pip3 install -U zipapps -c pip-constraints.txt >&2
 
 # shellcheck disable=SC2016
-python3 -m zipapps \
+./scripts/zipapps_patched.py \
   -u 'AUTO,pillow,_geoip_geolite2,UltraDict' \
   -p '/usr/bin/env python3' \
   -o 'build/an_website.pyz' \
