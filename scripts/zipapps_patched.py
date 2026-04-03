@@ -16,7 +16,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
-import pathlib
 import zipfile
 
 from zipapps.__main__ import main  # type: ignore[import-untyped]

@@ -21,10 +21,11 @@ import time
 from asyncio import Event
 from collections.abc import Mapping
 from importlib.metadata import Distribution
-from importlib.resources import files
 from importlib.resources.abc import Traversable
 from pathlib import Path
 from typing import Final, TypedDict
+
+from multiprocessing_importlib_resources import files
 
 try:
     import orjson as json

@@ -34,6 +34,7 @@ from warnings import catch_warnings, simplefilter
 import certifi
 import defusedxml  # type: ignore[import-untyped]
 import jsonpickle  # type: ignore[import-untyped]
+import multiprocessing_importlib_resources
 import orjson
 import pycurl
 import tornado.httputil
@@ -58,6 +59,7 @@ from . import braille, json  # noqa: F401  # pylint: disable=reimported
 
 def apply() -> None:
     """Improve."""
+    multiprocessing_importlib_resources._patch()
     patch_asyncio()
     patch_certifi()
     patch_configparser()

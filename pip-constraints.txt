@@ -158,6 +158,7 @@ hyrule==1.0.1
 jsonpickle==4.1.1
 lxml==6.0.2
 multidict==6.7.1
+multiprocessing-importlib-resources==0.0.4
 openmoji-dist==16.0.0
 orjson==3.11.8
 pillow==12.2.0

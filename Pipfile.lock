@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d26359f17daf81d796b53f288ff65ffab1795f699eb635619c8cf1077a12de21"
+            "sha256": "06b9d80e20e74e1a9a57a9e712bd9201ca85f9bd4f0d71bbe1c8d1cc8724e90d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1292,6 +1292,15 @@
             ],
             "markers": "python_version >= '3.9'",
             "version": "==6.7.1"
+        },
+        "multiprocessing-importlib-resources": {
+            "hashes": [
+                "sha256:aa17316473c725ca55d5d52f26012284516fd09e438d31a0d6d74e0aa80d8c92",
+                "sha256:fb7e76d785d54271f0b1accf16ef6a7750cbb5b8f21194e420e106da82872ec2"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.12'",
+            "version": "==0.0.4"
         },
         "openmoji-dist": {
             "hashes": [
