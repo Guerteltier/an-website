@@ -18,6 +18,7 @@
 import os
 import zipfile
 
+import zopfli
 from zipapps.__main__ import main  # type: ignore[import-untyped]
 
 DO_NOT_COMPRESS = (
@@ -28,7 +29,7 @@ DO_NOT_COMPRESS = (
 )
 
 
-class ZipFile(zipfile.ZipFile):
+class ZipFile(zopfli.ZipFile):
     """ZipFile with custom compression logic."""
 
     def write(
@@ -37,10 +38,12 @@ class ZipFile(zipfile.ZipFile):
         arcname: str | os.PathLike[str] | None = None,
         compress_type: int | None = None,
         compresslevel: int | None = None,
+        **kwargs: object,
     ) -> None:
         """Write with custom compression logic."""
         # assert current calling behaviour of zipapp.py
         assert self.compression == zipfile.ZIP_STORED
+        assert not kwargs
         assert compress_type is None
         assert compresslevel is None
         assert arcname is not None
@@ -48,6 +51,13 @@ class ZipFile(zipfile.ZipFile):
 
         if arcname.startswith(DO_NOT_COMPRESS):
             return super().write(filename, arcname)
+
+        if arcname.endswith(".py"):
+            return super().write(
+                filename,
+                arcname,
+                compress_type=zipfile.ZIP_DEFLATED,
+            )
 
         return super().write(
             filename,
@@ -57,7 +67,7 @@ class ZipFile(zipfile.ZipFile):
         )
 
 
-zipfile.ZipFile = ZipFile  # type: ignore[misc]
+zipfile.ZipFile = ZipFile  # type: ignore[assignment, misc]
 
 
 main()

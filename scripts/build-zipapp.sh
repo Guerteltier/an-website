@@ -18,7 +18,7 @@ pip3 install -U dulwich get_version setuptools -c pip-constraints.txt >&2
 
 VERSION="$(./setup.py --version)"
 
-pip3 install -U zipapps -c pip-constraints.txt >&2
+pip3 install -U zipapps zopflipy -c pip-constraints.txt >&2
 
 # shellcheck disable=SC2016
 ./scripts/zipapps_patched.py \
