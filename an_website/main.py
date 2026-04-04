@@ -96,6 +96,11 @@ from .utils.utils import (
 )
 
 try:
+    from test.support import has_fork_support  # type: ignore[import-not-found]
+except ModuleNotFoundError:
+    has_fork_support = hasattr(os, "fork")
+
+try:
     import perf8  # type: ignore[import, unused-ignore]
 except ModuleNotFoundError:
     perf8 = None  # pylint: disable=invalid-name
@@ -992,7 +997,7 @@ def main(  # noqa: C901  # pragma: no cover
     processes = config.getint(
         "GENERAL",
         "PROCESSES",
-        fallback=hasattr(os, "fork") * (2 if sys.flags.dev_mode else -1),
+        fallback=has_fork_support * (2 if sys.flags.dev_mode else -1),
     )
 
     if processes < 0:
