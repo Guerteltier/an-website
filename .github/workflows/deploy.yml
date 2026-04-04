@@ -433,14 +433,11 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: source-tarball
-      - name: Download x86_64 zipapp
+      - name: Download zipapps
         uses: actions/download-artifact@v8
         with:
-          name: x86_64-zipapp
-      - name: Download aarch64 zipapp
-        uses: actions/download-artifact@v8
-        with:
-          name: aarch64-zipapp
+          pattern: '*-zipapp'
+          merge-multiple: true
       - name: Version
         id: version
         shell: python
