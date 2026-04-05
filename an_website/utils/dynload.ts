@@ -45,10 +45,10 @@ function dynLoadOnData(
         return;
     }
 
-    console.log("Handling data", data);
+    console.debug("Handling data", data);
     if (!onpopstate) {
         if (lastLoaded.length === 1 && lastLoaded[0] === url) {
-            console.log("URL is the same as last loaded, ignoring");
+            console.debug("URL is the same as last loaded, ignoring");
             return;
         }
         history.pushState(
@@ -114,7 +114,7 @@ function updateHtml(data: DynloadData): void {
 }
 
 function dynLoad(url: string): Promise<void> {
-    console.log("Loading URL", url);
+    console.debug("Loading URL", url);
     history.replaceState( // save current scrollPos
         {
             data: urlData,
@@ -136,7 +136,7 @@ async function dynLoadSwitchToURL(
     allowSameUrl = false,
 ): Promise<void> {
     if (!allowSameUrl && url === location.href) {
-        console.log("URL is the same as current, just hide site pane");
+        console.debug("URL is the same as current, just hide site pane");
         hideSitePane();
         return;
     }
@@ -150,7 +150,7 @@ async function dynLoadSwitchToURL(
             dynLoadOnData(data, false);
         },
         (error: unknown) => {
-            console.log(error);
+            console.error(error);
             if (url === location.href) {
                 location.reload();
             } else {
@@ -164,7 +164,7 @@ async function dynLoadSwitchToURL(
 async function dynLoadOnPopState(event: PopStateEvent): Promise<void> {
     if (event.state) {
         const state = event.state as DynloadData;
-        console.log("Popstate", state);
+        console.debug("Popstate", state);
 
         if (
             !((event.state as { data: string }).data &&
@@ -218,14 +218,14 @@ d.addEventListener("click", (e: DocumentEventMap["click"]) => {
         // link is to different domain
         !anchor_url.startsWith(location.origin)
     ) {
-        console.log({ msg: "cannot handle click", anchor, anchor_url });
+        console.debug({ msg: "cannot handle click", anchor, anchor_url });
         return;
     }
 
     e.preventDefault();
 
     void dynLoad(anchor_url).then(() => {
-        console.log("blurring", anchor);
+        console.debug("blurring", anchor);
         anchor.blur();
     });
 });

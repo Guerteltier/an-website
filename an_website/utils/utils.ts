@@ -21,7 +21,7 @@ const jsonContentType = "application/json";
 export function post(
     url: string,
     params = {},
-    ondata = console.log,
+    ondata = console.debug,
     onerror: (data: unknown) => void = console.error,
     accept = jsonContentType,
 ): Promise<void> {
@@ -56,7 +56,7 @@ export function vt(action: () => void | Promise<void>): void {
 export function get(
     url: string,
     params: Record<string, string> | string = {},
-    ondata = console.log,
+    ondata = console.debug,
     onerror: (data: unknown) => void = console.error,
     accept = jsonContentType,
 ): Promise<void> {

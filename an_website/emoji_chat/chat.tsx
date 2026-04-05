@@ -46,11 +46,12 @@ const EmojiImgComponent = ({ emoji }: { emoji: string }): JSX.Element => {
 };
 
 const EmojiComponent = ({ emoji }: { emoji: string }): JSX.Element => {
-    console.log(getOpenMojiType());
-    if (getOpenMojiType() === "img") {
+    var emojiType = getOpenMojiType();
+    console.debug(emojiType);
+    if (emojiType === "img") {
         return <EmojiImgComponent emoji={emoji} />;
     }
-    if (getOpenMojiType()) {
+    if (emojiType) {
         return <span className="openmoji">{[emoji]}</span>;
     }
     return emoji;
@@ -98,7 +99,7 @@ type ConnectionState = "connecting" | "connected" | "disconnected";
 const stateMapping: Record<ConnectionState, string> = {
     connecting: "Versuche mit WebSocket zu verbinden",
     connected: "Mit WebSocket verbunden!",
-    disconnected: "Verbindung getrennt. Drücke hier um erneut zu versuchen.",
+    disconnected: "Verbindung getrennt. Klicke hier um es erneut zu versuchen.",
 };
 
 const setConnectionState = (state: ConnectionState) => {
@@ -149,17 +150,17 @@ const handleWebSocketData = (event: { data: string }) => {
                 msg.content.join("") == lastMessage &&
                 msg.author.join("") == currentUserName
             ) {
-                console.debug("successfully send " + lastMessage);
+                console.debug("Sent message", lastMessage);
                 lastMessage = "";
             } else {
-                console.debug("New message", msg);
+                console.debug("Received message", msg);
             }
             appendMessage(msg);
             break;
         }
         case "init": {
             displayCurrentUser(data.current_user);
-            console.log("Connected as", data.current_user.join(""));
+            console.debug("Connected as", data.current_user.join(""));
             setConnectionState("connected");
             reconnectTimeout = 100;
             reconnectTries = 0;
@@ -182,7 +183,7 @@ const handleWebSocketData = (event: { data: string }) => {
             break;
         }
         default: {
-            console.error(`Invalid type ${data.type}`);
+            console.error("Unknown type", data.type);
         }
     }
 };
@@ -216,11 +217,11 @@ const openWS = () => {
             return;
         }
         console.debug(
-            `Connection closed, reconnecting in ${reconnectTimeout}ms  (${reconnectTries})`,
+            `Connection closed, reconnecting in ${reconnectTimeout}ms (${reconnectTries})`,
         );
         setConnectionState("connecting");
         if (reconnectTries > 10) {
-            // not connected for long time, just give up
+            // disconnected for a long time, just give up
             setConnectionState("disconnected");
             return;
         }
