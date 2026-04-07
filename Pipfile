@@ -50,6 +50,7 @@ UltraDict = "<2"
 uvloop = "<2"
 
 [dev-packages]
+astroid = {git = "git+https://github.com/Joshix-1/astroid", ref = "an-website-backport"}
 autoflake = "==2.*"
 bandit = {version = "==1.*", extras = ["toml"]}
 black = {git = "git+https://github.com/psf/black.git", ref = "9c239d26c1f0de33a067faaef4a1e330df435cc6"}
