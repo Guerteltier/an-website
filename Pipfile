@@ -50,10 +50,10 @@ UltraDict = "<2"
 uvloop = "<2"
 
 [dev-packages]
-astroid = {git = "git+https://github.com/Joshix-1/astroid", ref = "an-website-backport"}
+astroid = {git = "git+https://github.com/asozialesnetzwerk/astroid", ref = "an-website"}
 autoflake = "==2.*"
 bandit = {version = "==1.*", extras = ["toml"]}
-black = {git = "git+https://github.com/psf/black.git", ref = "9c239d26c1f0de33a067faaef4a1e330df435cc6"}
+black = {git = "git+https://github.com/asozialesnetzwerk/black.git", ref = "an-website"}
 build = "==1.*"
 coverage = "==7.*"
 cryptography = "==46.*"
@@ -77,7 +77,7 @@ pipenv = {version = "==2026.0.3", extras = ["safety"]}
 pre-commit = "==3.*"
 pylint = "==4.*"
 pylint-pytest = "==1.*"
-pyrepl = {git = "git+https://github.com/pypy/pyrepl.git", ref = "502bcf766e22b7d3898ed318f4a02d575804eb6f"}
+pyrepl = {git = "git+https://github.com/asozialesnetzwerk/pyrepl", ref = "an-website"}
 pytest = "==9.*"
 pytest-cov = "==7.*"
 pytest-is-running = "==1.*"
