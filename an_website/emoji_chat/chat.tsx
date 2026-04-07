@@ -46,7 +46,7 @@ const EmojiImgComponent = ({ emoji }: { emoji: string }): JSX.Element => {
 };
 
 const EmojiComponent = ({ emoji }: { emoji: string }): JSX.Element => {
-    var emojiType = getOpenMojiType();
+    const emojiType = getOpenMojiType();
     console.debug(emojiType);
     if (emojiType === "img") {
         return <EmojiImgComponent emoji={emoji} />;

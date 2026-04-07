@@ -33,6 +33,7 @@ build_js_debug *args:
         '--external:/static/*' --legal-comments=inline '--footer:js=// @license-end' \
         "--alias:@utils/utils.js=$(./scripts/fix_static_url_path.py /static/js/utils/utils.js)" \
         "--alias:@utils/jsx-runtime=$(./scripts/fix_static_url_path.py /static/js/utils/utils.js)" \
+        --loader:.svg=text \
         "$@"
 
 [positional-arguments]
@@ -42,7 +43,7 @@ build_js *args:
 [positional-arguments]
 esbuild *args:
     deno run -A https://deno.land/x/esbuild@v0.28.0/mod.js \
-        --charset=utf8 --supported:destructuring=true --loader:.svg=text \
+        --charset=utf8 --supported:destructuring=true \
         "--target=$(just target),chrome103,edge143,firefox115,ios11,safari16.6" \
         "$@"
 
