@@ -109,6 +109,8 @@ def int_to_bytes(number: int, length: int, signed: bool = False) -> bytes:
 
 def bytes_to_int(bytes_: bytes, signed: bool = False) -> int:
     """Convert an int to bytes."""
+    if not bytes_:
+        raise ValueError("Can't convert empty bytes to int")
     return int.from_bytes(bytes_, "big", signed=signed)
 
 
@@ -116,13 +118,24 @@ def _parse_token_v0(
     token_body: str, secret: bytes, *, verify_time: bool = True
 ) -> ParseResult:
     """Parse an auth token of version 0."""
-    data: bytes = b64decode(token_body)
+    data: bytes
+    try:
+        data = b64decode(token_body, validate=True)
+    except ValueError as err:
+        raise InvalidTokenError() from err
     data, hash_ = data[:-48], data[-48:]
+    if not data or not hash_:
+        raise InvalidTokenError()
+
     if not hmac.compare_digest(hmac.digest(secret, data, "SHA3-384"), hash_):
         raise InvalidTokenError()
-    data, start = data[:-5], bytes_to_int(data[-5:])
-    data, duration = data[:-5], bytes_to_int(data[-5:])
-    permissions, salt = bytes_to_int(data[:-6]), data[-6:]
+
+    try:
+        data, start = data[:-5], bytes_to_int(data[-5:])
+        data, duration = data[:-5], bytes_to_int(data[-5:])
+        permissions, salt = bytes_to_int(data[:-6]), data[-6:]
+    except ValueError as err:
+        raise InvalidTokenError() from err
 
     now = int(datetime.now().timestamp())
     if verify_time and (now < start or start + duration < now):
