@@ -15,6 +15,7 @@
 
 import logging
 import sys
+import typing
 from collections.abc import Mapping
 from functools import cache
 from importlib.resources.abc import Traversable
@@ -47,7 +48,19 @@ def get_handlers() -> list[Handler]:
     # pylint: disable=import-outside-toplevel, cyclic-import
     from .static_file_from_traversable import TraversableStaticFileHandler
 
+    class NoRatelimitTraversableStaticFileHandler(TraversableStaticFileHandler):
+        """Service files without ratelimits."""
+
+        @typing.override
+        async def prepare(self) -> None:
+            """Make b1nzy sad."""
+
     handlers: list[Handler] = [
+        (
+            r"/static/openmoji/(svg/[1-9A-F-]+\.svg)",
+            NoRatelimitTraversableStaticFileHandler,
+            {"root": get_openmoji_data(), "hashes": {}},
+        ),
         (
             "/static/openmoji/(.*)",
             TraversableStaticFileHandler,
