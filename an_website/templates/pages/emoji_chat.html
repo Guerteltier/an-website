@@ -15,7 +15,7 @@
              data-state="disconnected"
              id="connection-state"></div>
         Du bist: <div id="current-user">{% for emoji in user_name %}{% raw emoji2html(emoji) %}{% end %}</div>
-        <input id="message-input" type="text" name="message">
+        <input id="message-input" {% if openmoji %} class="openmoji" {% end %} type="text" name="message">
         <button type="submit">Senden!</button>
     </form>
 
