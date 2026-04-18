@@ -152,6 +152,9 @@ function startQuotes() {
                 // ratelimited
                 alert(data.reason);
             }
+            if (404 === data.status) {
+                location.reload();
+            }
             return false;
         } else if (data.id) {
             const updateData = () => {

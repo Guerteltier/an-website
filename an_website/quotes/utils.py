@@ -60,6 +60,9 @@ LOGGER: Final = logging.getLogger(__name__)
 
 API_URL: Final[str] = "https://zitate.prapsschnalinen.de/api"
 
+WRONGQUOTE_DELETED: Final[int] = -2
+WRONGQUOTE_UNKNOWN: Final[int] = -1
+
 
 # pylint: disable-next=too-few-public-methods
 class UltraDictType[K, V](MutableMapping[K, V], abc.ABC):
@@ -129,7 +132,10 @@ class Author(QuotesObjBase):
         data = await make_api_request(
             f"authors/{self.id}", entity_should_exist=True
         )
-        return None if data is None else parse_author(data)
+        if data is None:
+            del AUTHORS_CACHE[self.id]
+            return None
+        return parse_author(data)
 
     def get_path(self) -> str:
         """Return the path to the author info."""
@@ -167,7 +173,11 @@ class Quote(QuotesObjBase):
     @property
     def author(self) -> Author:
         """Get the corresponding author object."""
-        return AUTHORS_CACHE[self.author_id]
+        try:
+            return AUTHORS_CACHE[self.author_id]
+        except KeyError as err:
+            LOGGER.error("Author %d was not in cache", self.author_id)
+            raise HTTPError(404) from err
 
     @classmethod
     def fetch_all_endpoint(cls) -> Literal["quotes"]:
@@ -180,6 +190,7 @@ class Quote(QuotesObjBase):
             f"quotes/{self.id}", entity_should_exist=True
         )
         if data is None:
+            del QUOTES_CACHE[self.id]
             return None
         return parse_quote(data, self)
 
@@ -216,7 +227,11 @@ class WrongQuote(QuotesObjBase):
     @property
     def author(self) -> Author:
         """Get the corresponding author object."""
-        return AUTHORS_CACHE[self.author_id]
+        try:
+            return AUTHORS_CACHE[self.author_id]
+        except KeyError as err:
+            LOGGER.error("Author %d was not in cache", self.author_id)
+            raise HTTPError(404) from err
 
     @classmethod
     def fetch_all_endpoint(cls) -> Literal["wrongquotes"]:
@@ -225,7 +240,7 @@ class WrongQuote(QuotesObjBase):
 
     async def fetch_new_data(self) -> WrongQuote:
         """Fetch new data from the API."""
-        if self.id == -1:
+        if self.id == WRONGQUOTE_UNKNOWN:
             api_data = await make_api_request(
                 "wrongquotes",
                 {
@@ -237,11 +252,21 @@ class WrongQuote(QuotesObjBase):
             )
             if api_data:
                 api_data = api_data[0]
+        # pylint: disable-next=confusing-consecutive-elif
+        elif self.id == WRONGQUOTE_DELETED:
+            api_data = None
         else:
             api_data = await make_api_request(
                 f"wrongquotes/{self.id}", entity_should_exist=True
             )
         if not api_data:
+            self.id = WRONGQUOTE_DELETED
+            author = await self.author.fetch_new_data()
+            quote = await self.quote.fetch_new_data()
+            if author and quote:
+                self.id = WRONGQUOTE_UNKNOWN
+            else:
+                del WRONG_QUOTES_CACHE[(self.quote_id, self.author_id)]
             return self
         return parse_wrong_quote(api_data, self)
 
@@ -259,7 +284,7 @@ class WrongQuote(QuotesObjBase):
 
         Format: quote_id-author_id
         """
-        if minify and self.id != -1:
+        if minify and self.id != WRONGQUOTE_UNKNOWN:
             return str(self.id)
         return f"{self.quote_id}-{self.author_id}"
 
@@ -270,7 +295,11 @@ class WrongQuote(QuotesObjBase):
     @property
     def quote(self) -> Quote:
         """Get the corresponding quote object."""
-        return QUOTES_CACHE[self.quote_id]
+        try:
+            return QUOTES_CACHE[self.quote_id]
+        except KeyError as err:
+            LOGGER.error("Quote %d was not in cache", self.quote_id)
+            raise HTTPError(404) from err
 
     def to_json(self) -> dict[str, Any]:
         """Get the wrong quote as JSON."""
@@ -289,7 +318,7 @@ class WrongQuote(QuotesObjBase):
         lazy: bool = False,
     ) -> WrongQuote | None:
         """Vote for the wrong quote."""
-        if self.id == -1:
+        if self.id == WRONGQUOTE_UNKNOWN:
             raise ValueError("Can't vote for a not existing quote.")
         # if lazy:  # simulate the vote and do the actual voting later
         #     self.rating += vote
@@ -306,8 +335,7 @@ class WrongQuote(QuotesObjBase):
             entity_should_exist=True,
         )
         if data is None:
-            self.id = -1
-            return None
+            return await self.fetch_new_data()
 
         return parse_wrong_quote(
             data,
@@ -487,34 +515,25 @@ def parse_wrong_quote(
 
     id_tuple = (quote.id, author.id)
     rating = json_data["rating"]
-    wrong_quote_id = int(json_data.get("id") or -1)
+    wrong_quote_id = int(json_data.get("id") or WRONGQUOTE_UNKNOWN)
 
-    if wrong_quote is None:
-        with WRONG_QUOTES_CACHE.lock:
-            wrong_quote = WRONG_QUOTES_CACHE.get(id_tuple)
-            if wrong_quote is None:
-                wrong_quote = (
-                    WrongQuote(  # pylint: disable=unexpected-keyword-arg
-                        id=wrong_quote_id,
-                        quote_id=quote.id,
-                        author_id=author.id,
-                        rating=rating,
-                    )
-                )
-                WRONG_QUOTES_CACHE[id_tuple] = wrong_quote
-                return wrong_quote
-
-    # make sure the wrong quote is the correct one
-    if (wrong_quote.quote_id, wrong_quote.author_id) != id_tuple:
-        raise HTTPError(reason="ERROR: -41")
-
-    # update the data of the wrong quote
-    if wrong_quote.rating != rating:
-        wrong_quote.rating = rating
-    if wrong_quote.id != wrong_quote_id:
+    if wrong_quote:
         wrong_quote.id = wrong_quote_id
+        wrong_quote.rating = rating
 
-    WRONG_QUOTES_CACHE[id_tuple] = wrong_quote
+    with WRONG_QUOTES_CACHE.lock:
+        wrong_quote = WRONG_QUOTES_CACHE.get(id_tuple, wrong_quote)
+        if wrong_quote is None:
+            wrong_quote = WrongQuote(  # pylint: disable=unexpected-keyword-arg
+                id=wrong_quote_id,
+                quote_id=quote.id,
+                author_id=author.id,
+                rating=rating,
+            )
+        else:
+            wrong_quote.id = wrong_quote_id
+            wrong_quote.rating = rating
+        WRONG_QUOTES_CACHE[id_tuple] = wrong_quote
 
     return wrong_quote
 
@@ -769,7 +788,7 @@ async def get_wrong_quote(
         # we don't need to request anything, as the wrong_quote probably has
         # no ratings just use the cached quote and author
         # pylint: disable-next=too-many-function-args
-        return WrongQuote(-1, quote_id, author_id, 0)
+        return WrongQuote(WRONGQUOTE_UNKNOWN, quote_id, author_id, 0)
     # request the wrong quote from the API
     result = await make_api_request(
         "wrongquotes",
@@ -826,10 +845,12 @@ async def create_wq_and_vote(
     wrong_quote = WRONG_QUOTES_CACHE.get((quote_id, author_id))
     if (
         wrong_quote
-        and wrong_quote.id != -1
+        and wrong_quote.id != WRONGQUOTE_UNKNOWN
         and (result := await wrong_quote.vote(vote, fast)) is not None
     ):
         return result
+    if wrong_quote and wrong_quote.id == WRONGQUOTE_DELETED:
+        raise HTTPError(404)
     # we don't know the wrong_quote_id, so we have to create the wrong_quote
     data = await make_api_request(
         "wrongquotes",
@@ -847,6 +868,8 @@ async def create_wq_and_vote(
         )
         raise HTTPError(500)
     wrong_quote = parse_wrong_quote(data)
+    if wrong_quote.id == WRONGQUOTE_DELETED:
+        raise HTTPError(404)
     if (result := await wrong_quote.vote(vote, lazy=True)) is not None:
         return result
     LOGGER.error(
