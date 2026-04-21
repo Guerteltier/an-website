@@ -49,7 +49,6 @@ from .. import (
     EVENT_SHUTDOWN,
     NAME,
     ORJSON_OPTIONS,
-    pytest_is_running,
 )
 from ..utils.request_handler import HTMLRequestHandler
 from ..utils.utils import ModuleInfo, Permission, ratelimit
@@ -58,7 +57,8 @@ DIR: Final = ROOT_DIR / "quotes"
 
 LOGGER: Final = logging.getLogger(__name__)
 
-API_URL: Final[str] = "https://zitate.prapsschnalinen.de/api"
+# TODO: make this configurable and move it into app settings
+API_URL: str = "https://zitate.prapsschnalinen.de/api"
 
 WRONGQUOTE_DELETED: Final[int] = -2
 WRONGQUOTE_UNKNOWN: Final[int] = -1
@@ -410,8 +410,6 @@ async def make_api_request(
     request_timeout: float | None = None,
 ) -> Any | None:  # TODO: list[dict[str, Any]] | dict[str, Any] | None
     """Make API request and return the result as dict."""
-    if pytest_is_running():
-        return None
     query = f"?{urlencode(args)}" if args else ""
     url = f"{API_URL}/{endpoint}{query}"
     body_str = urlencode(body) if body else body

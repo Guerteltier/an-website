@@ -14,6 +14,7 @@
 
 """Utilities used by the tests of an-website."""
 
+import os
 import sys
 from os.path import abspath, dirname
 
@@ -61,7 +62,7 @@ from tornado.web import Application
 
 # pylint: disable=ungrouped-imports
 from an_website import EVENT_ELASTICSEARCH, EVENT_REDIS, NAME, UPTIME, main
-from an_website.quotes.utils import parse_wrong_quote
+from an_website.quotes import utils as quote_utils
 from an_website.utils import elasticsearch_setup
 from an_website.utils.base_request_handler import TEXT_CONTENT_TYPES
 from an_website.utils.better_config_parser import BetterConfigParser
@@ -87,10 +88,11 @@ WRONG_QUOTE_DATA = {
             "frage, was du für dein Land tun kannst."
         ),
     },
-    "rating": 4,
-    "showed": 216,
-    "voted": 129,
+    "rating": 1,
+    "showed": 0,
+    "voted": 0,
 }
+quote_utils.API_URL = os.getenv("WRONG_QUOTES_API_URL", quote_utils.API_URL)
 
 FetchCallable = Callable[..., Awaitable[HTTPResponse]]
 
@@ -195,7 +197,7 @@ def fetch(
     http_server_port: tuple[socket.socket, int],
 ) -> FetchCallable:
     """Fetch a URL."""
-    parse_wrong_quote(WRONG_QUOTE_DATA)
+    quote_utils.parse_wrong_quote(WRONG_QUOTE_DATA)
     host = f"http://127.0.0.1:{http_server_port[1]}"
 
     async def _fetch(

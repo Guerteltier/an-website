@@ -1,0 +1,35 @@
+name: Install and start WrongQuotes API
+description: Start wrong quotes
+inputs:
+  git_repo:
+    description: The git repo
+    required: false
+    default: https://codeberg.org/uonel/zitate.git
+  rev:
+    description: The branch to checkout
+    required: false
+    default: master
+runs:
+  using: composite
+  steps:
+    - name: Install wrong quotes api
+      shell: bash
+      run: |
+        set -xeu
+        git clone -b ${{ inputs.rev }} "${{ inputs.git_repo }}" /opt/zitate
+        pushd /opt/zitate
+        python3 -m venv venv
+        ./venv/bin/pip install -r requirements.txt
+        python -c 'import pickle;pickle.dump(["67"], open("apikeys.pkl", "wb"))'
+        ./venv/bin/flask --app webvoting.py run &
+        disown
+        popd
+        sleep 1
+        curl -sSf --data 'author=Abraham Lincoln' "$API_URL/authors"
+        curl -sSf --data 'author=Kim Jong-il' "$API_URL/authors"
+        curl -sSf --data 'author=1&quote=Frage nicht, was dein Land für dich tun kann, frage, was du für dein Land tun kannst.' "$API_URL/quotes"
+        curl -sSf --data 'author=2&quote=1&contributed_by=yourmom' "$API_URL/wrongquotes"
+        curl -sSf --data 'vote=1' "$API_URL/wrongquotes/1"
+        curl -sSf "$API_URL/wrongquotes" | jq
+      env:
+         API_URL: http://127.0.0.1:5000/api

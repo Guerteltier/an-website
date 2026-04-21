@@ -267,6 +267,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
+      - name: Checkout .github
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github
+      - name: Start wrong quotes api
+        uses: ./.github/actions/start_wrong_quotes_api
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
@@ -286,6 +292,8 @@ jobs:
       - name: Run pytest
         timeout-minutes: 5
         run: pytest --durations=0 --verbose
+        env:
+          WRONG_QUOTES_API_URL: http://127.0.0.1:5000/api
 
   tests:
     name: Run tests
@@ -335,6 +343,8 @@ jobs:
           allow-prereleases: true
           cache: pip
           cache-dependency-path: Pipfile.lock
+      - name: Start wrong quotes api
+        uses: ./.github/actions/start_wrong_quotes_api
       - name: Install libcurl4-openssl-dev for compiling PycURL
         run: sudo apt-get install --update -y libcurl4-openssl-dev
       - name: Install requirements
@@ -346,6 +356,8 @@ jobs:
       - name: Run pytest
         timeout-minutes: 5
         run: pytest --durations=0 --verbose --cov --cov-report=term:skip-covered
+        env:
+          WRONG_QUOTES_API_URL: http://127.0.0.1:5000/api
       - name: Upload coverage as artifact
         uses: actions/upload-artifact@v6
         with:
@@ -384,6 +396,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: 3.14
+      - name: Start wrong quotes api
+        uses: ./.github/actions/start_wrong_quotes_api
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
@@ -405,6 +419,8 @@ jobs:
       - name: Run pytest
         timeout-minutes: 5
         run: PYTHONPATH="${HOME}/.cache/an-website/zipapps/an-website:an-website.pyz" pytest --durations=0 --verbose
+        env:
+          WRONG_QUOTES_API_URL: http://127.0.0.1:5000/api
 
   release:
     name: Create release
@@ -815,15 +831,28 @@ jobs:
         ports:
           - 6379:6379
     steps:
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.14
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            tests
+            pip-constraints.txt
+      - name: Start wrong quotes api
+        uses: ./.github/actions/start_wrong_quotes_api
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
           name: oci-image
       - name: Run tests
         timeout-minutes: 20
-        run: sudo podman run --network=host -t -v ./pip-constraints.txt:/pip-constraints.txt:z,ro -v ./tests:/tests:z,ro --entrypoint=/bin/sh oci-archive:oci-archive.tar -c "grep -P '^pytest-(?!cov)' /pip-constraints.txt | xargs /venv/bin/pip install --disable-pip-version-check -c /pip-constraints.txt html5lib pytest time-machine && /venv/bin/pytest --verbose /tests"
+        run: sudo podman run --network=host -t -e "WRONG_QUOTES_API_URL=$WRONG_QUOTES_API_URL" -v ./pip-constraints.txt:/pip-constraints.txt:z,ro -v ./tests:/tests:z,ro --entrypoint=/bin/sh oci-archive:oci-archive.tar -c "grep -P '^pytest-(?!cov)' /pip-constraints.txt | xargs /venv/bin/pip install --disable-pip-version-check -c /pip-constraints.txt html5lib pytest time-machine && /venv/bin/pytest --verbose /tests"
+        env:
+          WRONG_QUOTES_API_URL: http://127.0.0.1:5000/api
 
   push-oci-image:
     name: Push OCI image

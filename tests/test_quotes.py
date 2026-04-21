@@ -48,7 +48,7 @@ async def test_parsing_wrong_quotes() -> None:
     assert wrong_quote.id == 1
     # quote_id (1) - author_id (2)
     assert wrong_quote.get_id_as_str() == "1-2"
-    assert wrong_quote.rating == 4
+    assert wrong_quote.rating == 1
 
     # parsing the same dict twice should return the same object twice
     assert id(wrong_quote) == id(quotes.parse_wrong_quote(WRONG_QUOTE_DATA))
@@ -65,7 +65,7 @@ async def test_parsing_wrong_quotes() -> None:
     assert quote.id == 1
     assert quote.author.id == 1
 
-    assert await quotes.get_rating_by_id(1, 2) == 4
+    assert await quotes.get_rating_by_id(1, 2) == 1
 
     assert len(quotes.QUOTES_CACHE) == 1
     assert len(quotes.AUTHORS_CACHE) == 2
