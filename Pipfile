@@ -73,7 +73,7 @@ mypy = "==1.*"
 pep8-naming = "<2"
 # pex = "==2.2.*"
 # pip-tools = "==7.*"
-pipenv = {version = "==2026.0.3", extras = ["safety"]}
+pipenv = {version = "2026.5.*", extras = ["safety"]}
 pre-commit = "==3.*"
 pylint = "==4.*"
 pylint-pytest = "==1.*"
