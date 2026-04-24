@@ -1,10 +1,11 @@
 #!/bin/sh
-set -eu
+set -xeu
 
 alias yq="podman run -i --rm --security-opt=no-new-privileges --cap-drop=all --network=none docker.io/mikefarah/yq:4"
 alias oras="podman run -i --rm ghcr.io/oras-project/oras:v1.3.0"
 
-TAG=3.14-slim-trixie
+VARIANT=${VARIANT:-slim-trixie}
+TAG=3.14-${VARIANT}
 REPOSITORY=library/python
 NAME=docker.io/${REPOSITORY}:${TAG}
 
@@ -31,7 +32,8 @@ TIMESTAMP=$(python3 -c "from datetime import datetime; print(int(datetime.fromis
 
 buildah build \
   --timestamp "${TIMESTAMP}" \
-  --build-arg BASE="${BASE}" \
+  --build-arg "BASE=${BASE}" \
+  --build-arg "VARIANT=${VARIANT}" \
   --created-annotation \
   --annotation org.opencontainers.image.title="an-website" \
   --annotation org.opencontainers.image.version="${VERSION}" \
