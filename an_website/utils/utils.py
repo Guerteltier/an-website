@@ -775,7 +775,7 @@ def size_of_file(file: Traversable) -> int:
 
 
 def stanley(text: str, year: int) -> str:
-    "Stanley."
+    """Stanley."""
     return regex.sub(
         r"\b\p{Lu}\p{Ll}{4}\p{Ll}*\b",
         lambda match: (
