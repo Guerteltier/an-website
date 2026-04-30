@@ -39,6 +39,10 @@ warnings.filterwarnings(
 )
 warnings.filterwarnings("ignore", module="dill._dill", category=EncodingWarning)
 warnings.filterwarnings("ignore", module="regex", category=EncodingWarning)
+# uvloop.loop.Loop.run_in_executor calls asyncio.iscoroutinefunction
+warnings.filterwarnings(
+    "ignore", module="asyncio.threads", category=DeprecationWarning
+)
 warnings.simplefilter("ignore", PickleWarning)
 
 

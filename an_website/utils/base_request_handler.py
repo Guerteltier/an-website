@@ -88,6 +88,7 @@ from .utils import (
     hash_bytes,
     is_prime,
     ratelimit,
+    stanley,
     str_to_bool,
 )
 
@@ -1181,20 +1182,15 @@ class BaseRequestHandler(_RequestHandler):
         if isinstance(chunk, dict):
             chunk = self.dump(chunk)
 
-        if self.now.date() == date(self.now.year, 4, 27):
+        if (
+            self.now.date() == date(self.now.year, 4, 27)
+            or self.user_settings.stanley
+        ):
             if isinstance(chunk, bytes):
                 with contextlib.suppress(UnicodeDecodeError):
                     chunk = chunk.decode("UTF-8")
             if isinstance(chunk, str):
-                chunk = regex.sub(
-                    r"\b\p{Lu}\p{Ll}{4}\p{Ll}*\b",
-                    lambda match: (
-                        "Stanley"
-                        if Random(match[0]).randrange(5) == self.now.year % 5
-                        else match[0]
-                    ),
-                    chunk,
-                )
+                chunk = stanley(chunk, self.now.year)
 
         super().write(chunk)
 

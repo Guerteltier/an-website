@@ -774,6 +774,19 @@ def size_of_file(file: Traversable) -> int:
         return sum(map(len, data))  # pylint: disable=bad-builtin
 
 
+def stanley(text: str, year: int) -> str:
+    "Stanley."
+    return regex.sub(
+        r"\b\p{Lu}\p{Ll}{4}\p{Ll}*\b",
+        lambda match: (
+            "Stanley"
+            if random.Random(match[0]).randrange(5) == year % 5
+            else match[0]
+        ),
+        text,
+    )
+
+
 def str_to_bool(val: None | str | bool, default: None | bool = None) -> bool:
     """Convert a string representation of truth to True or False."""
     if isinstance(val, bool):

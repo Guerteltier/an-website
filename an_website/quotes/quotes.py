@@ -22,6 +22,7 @@ import logging
 import random
 from asyncio import AbstractEventLoop, Future
 from dataclasses import dataclass
+from datetime import date
 from typing import Any, ClassVar, Final, Literal, TypeAlias
 
 import regex
@@ -315,6 +316,9 @@ class QuoteById(QuoteBaseHandler):
                         }[self.content_type]
                     ),
                     wq_id=wrong_quote.get_id_as_str(),
+                    raphael=self.now.date() == date(self.now.year, 4, 27)
+                    or self.user_settings.stanley,
+                    mariella=self.now.year,
                 )
             )
 

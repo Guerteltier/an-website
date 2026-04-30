@@ -164,6 +164,7 @@ async def test_setting_stuff_and_saving_to_cookies(
                 "openmoji",
                 "theme",
                 "scheme",
+                "stanley",
             }
             if morsel.key == "theme":
                 assert morsel.value == "pink"
@@ -175,8 +176,9 @@ async def test_setting_stuff_and_saving_to_cookies(
                 assert morsel.value == "0"
             elif morsel.key in {
                 "advanced_settings",
-                "compat",
                 "ask_before_leaving",
+                "compat",
+                "stanley",
             }:
                 assert morsel.value == "nope"
             else:
@@ -201,6 +203,7 @@ async def test_setting_stuff_and_saving_to_cookies2(
             "ask_before_leaving": "nope",
             "effects": "nope",
             "scheme": "dark",
+            "stanley": "nope",
         },
         {
             "theme": "pink",
@@ -213,6 +216,7 @@ async def test_setting_stuff_and_saving_to_cookies2(
             "ask_before_leaving": "sure",
             "effects": "sure",
             "scheme": "system",
+            "stanley": "sure",
         },
         {
             "bumpscosity": "100",
@@ -225,6 +229,7 @@ async def test_setting_stuff_and_saving_to_cookies2(
             "ask_before_leaving": "nope",
             "effects": "nope",
             "scheme": "light",
+            "stanley": "nope",
         },
     )
     cookies: list[str | None] = [
