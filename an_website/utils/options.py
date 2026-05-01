@@ -227,9 +227,7 @@ class Options:
     )
     compat: Option[bool] = BoolOption(name="compat", get_default_value=false)
     dynload: Option[bool] = BoolOption(name="dynload", get_default_value=false)
-    stanley: Option[Trilean] = TrileanOption(
-        name="stanley", get_default_value=null
-    )
+    stanley: Option[bool] = BoolOption(name="stanley", get_default_value=false)
     effects: Option[bool] = BoolOption(
         name="effects",
         get_default_value=lambda handler: (
