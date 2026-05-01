@@ -23,7 +23,6 @@ import textwrap
 import time
 from collections import ChainMap
 from collections.abc import Iterable, Mapping, Set
-from datetime import date
 from itertools import pairwise
 from tempfile import TemporaryDirectory
 from typing import Any, ClassVar, Final
@@ -35,7 +34,6 @@ from tornado.web import HTTPError
 
 from .. import EPOCH
 from ..utils import static_file_handling
-from ..utils.utils import stanley
 from .utils import (
     DIR,
     QuoteReadyCheckHandler,
@@ -208,8 +206,6 @@ def create_image(  # noqa: C901  # pylint: disable=too-complex
     *,
     include_kangaroo: bool = True,
     wq_id: None | str = None,
-    raphael: bool = False,
-    mariella: int = 0,
 ) -> bytes:
     """Create an image with the given quote and author."""
     image = (
@@ -220,10 +216,6 @@ def create_image(  # noqa: C901  # pylint: disable=too-complex
     draw = ImageDraw.Draw(image, mode="RGB")
 
     max_width = IMAGE_WIDTH if font is FONT_SMALLEST else QUOTE_MAX_WIDTH
-
-    if raphael and mariella:
-        quote = stanley(quote, mariella)
-        author = stanley(author, mariella)
 
     # draw quote
     quote_str = f"»{quote}«"
@@ -291,8 +283,6 @@ def create_image(  # noqa: C901  # pylint: disable=too-complex
                 file_type,
                 smaller,
                 wq_id=wq_id,
-                raphael=raphael,
-                mariella=mariella,
             )
 
         LOGGER.error("Quote doesn't fit on the image %r", quote)
@@ -444,8 +434,16 @@ class QuoteAsImage(QuoteReadyCheckHandler):
         return await self.finish(
             await asyncio.to_thread(
                 create_image,
-                wrong_quote.quote.quote,
-                wrong_quote.author.name,
+                (
+                    self.sub_stanley(wrong_quote.quote.quote)
+                    if self.stanley()
+                    else wrong_quote.quote.quote
+                ),
+                (
+                    self.sub_stanley(wrong_quote.author.name)
+                    if self.stanley()
+                    else wrong_quote.author.name
+                ),
                 rating=(
                     None
                     if self.get_bool_argument("no_rating", False)
@@ -461,8 +459,5 @@ class QuoteAsImage(QuoteReadyCheckHandler):
                     "no_kangaroo", False
                 ),
                 wq_id=wrong_quote.get_id_as_str(),
-                raphael=self.now.date() == date(self.now.year, 4, 27)
-                or self.user_settings.stanley,
-                mariella=self.now.year,
             )
         )
